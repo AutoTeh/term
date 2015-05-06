@@ -34,24 +34,6 @@ class Selectbd_model extends CI_Model {
                 return $TempArray;
         }
 
-        public function dogovor($Search = NULL, $WhereField = NULL)
-        {
-        		if ($this->search_field($WhereField, TRUE))
-        		{
-	        		$this->db->select('ID_Dogovor, Num_Dogovor, Date_Dogovor,
-	        						   Diskont, Date_Diskont, Internat_Card,
-	        						   Sber_Card, Money_Movement, Income_Money,
-	        						   Date_Dissolution, thank');
-	        		$this->db->from('Dogovor');
-
-	        		if ($Search == NULL && $WhereField == NULL) ? $this->db->where_in('ID_Dogovor', $this->search_ID('Dogovor.ID_Dogovor', $this->search_field($WhereField), $Search));
-
-	                $query = $this->db->get();
-	                return ($query->num_rows() > 0) ? $query->result() : FALSE;
-
-        		} Else: return FALSE;
-        }
-
         public function search_field($Search = NULL, $BoolOut = FALSE)
         {
         		$this->db->select('Name_FieldsBD');
@@ -60,6 +42,38 @@ class Selectbd_model extends CI_Model {
 
                 $query = $this->db->get();
                 return ($query->num_rows() > 0) ? if ($BoolOut) ? TRUE : $query->result() : FALSE;
+        }
+
+        public function dogovor()
+        {
+        		if ($this->search_field($this->input->post('SearchFild'), TRUE))
+        		{
+	        		$this->db->select('ID_Dogovor, Num_Dogovor, Date_Dogovor,
+	        						   Diskont, Date_Diskont, Internat_Card,
+	        						   Sber_Card, Money_Movement, Income_Money,
+	        						   Date_Dissolution, thank');
+	        		$this->db->from('Dogovor');
+
+	        		if ($this->input->post('WhereOrIN') == TRUE)
+	        		{
+	        			$this->db->where_in('ID_Dogovor', $this->search_ID('Dogovor.ID_Dogovor',
+	        											  $this->search_field($this->input->post('SearchFild')),
+	        											  $this->input->post('Search')));
+
+                    } elseif($this->input->post('WhereOrIN') == FALSE)  {                    	$TempArray = array('Num_Dogovor', 'Date_Dogovor',
+	        						   'Diskont', 'Date_Diskont', 'Internat_Card',
+	        						   'Sber_Card', 'Money_Movement', 'Income_Money',
+	        						   'Date_Dissolution', 'thank');
+
+	        	        foreach ( $TempArray as $value ) {
+                        	if (!$this->input->post($value) == '') ? $this->db->where($value, $this->input->post($value)); ;
+						}
+                    }
+
+	                $query = $this->db->get();
+	                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+
+        		} Else: return FALSE;
         }
 
         public function org($Search = NULL)
@@ -93,7 +107,7 @@ class Selectbd_model extends CI_Model {
 	          	if ($query->num_rows() > 0)
 				{
 					        $row = $query->row();
-					        $OutString = $row->name;
+					        $OutString = (!$CityTRUE) ? $row->name;
 					        if ($row->parentaoguid == '') ? $Out = FALSE : $Search = $row->parentaoguid;
 
                 while ($Out) {
