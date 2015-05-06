@@ -9,7 +9,7 @@ class Selectbd_model extends CI_Model {
                 parent::__construct();
         }
 
-        public function Search_ID($NameFild, $NameFildWHERE, $SearchArray)
+        public function search_ID($NameFild, $NameFildWHERE, $Search)
         {
         		$this->db->select($NameFild);
         		$this->db->from('Dogovor');
@@ -19,28 +19,50 @@ class Selectbd_model extends CI_Model {
                 $this->db->join('Terminal', 'Terminal.ID_Terminal = TID.ID_TID', 'inner');
                 $this->db->join('Pinpad', 'Pinpad.ID_Pinpad = TID.ID_TID', 'inner');
                 $this->db->join('Sim', 'Sim.ID_Sim = TID.ID_TID', 'inner');
-                $this->db->where_in($NameFildWHERE, $SearchArray);
+                $this->db->where($NameFildWHERE, $Search);
                 $query = $this->db->get();
 
-                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+                if ($query->num_rows() > 0)
+                {
+	                foreach ($query->result() as $row)
+					{
+							$TempArray[] = $row[$NameFild];
+					}
 
+				} Else: return FALSE;
+
+                return $TempArray;
         }
 
-        public function dogovor($SearchArray = '')
+        public function dogovor($Search = NULL, $WhereField = NULL)
         {
-        		$this->db->select('ID_Dogovor, Num_Dogovor, Date_Dogovor,
-        						   Diskont, Date_Diskont, Internat_Card,
-        						   Sber_Card, Money_Movement, Income_Money,
-        						   Date_Dissolution, thank');
-        		$this->db->from('Dogovor');
+        		if ($this->search_field($WhereField, TRUE))
+        		{
+	        		$this->db->select('ID_Dogovor, Num_Dogovor, Date_Dogovor,
+	        						   Diskont, Date_Diskont, Internat_Card,
+	        						   Sber_Card, Money_Movement, Income_Money,
+	        						   Date_Dissolution, thank');
+	        		$this->db->from('Dogovor');
 
-        		if ($SearchArray = '') ? $this->db->where_in('ID_Dogovor', $SearchArray);
+	        		if ($Search == NULL && $WhereField == NULL) ? $this->db->where_in('ID_Dogovor', $this->search_ID('Dogovor.ID_Dogovor', $this->search_field($WhereField), $Search));
 
-                $query = $this->db->get();
-                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+	                $query = $this->db->get();
+	                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+
+        		} Else: return FALSE;
         }
 
-        public function org($SearchArray = '')
+        public function search_field($Search = NULL, $BoolOut = FALSE)
+        {
+        		$this->db->select('Name_FieldsBD');
+        		$this->db->from('FieldsBD');
+				$this->db->where('ID_FieldsBD', $Search);
+
+                $query = $this->db->get();
+                return ($query->num_rows() > 0) ? if ($BoolOut) ? TRUE : $query->result() : FALSE;
+        }
+
+        public function org($Search = NULL)
         {
         		$this->db->select('ID_Org, INN, Name_Org,
         						   ID_FromS_Org, FromH, ID_PostS_Org,
@@ -53,7 +75,7 @@ class Selectbd_model extends CI_Model {
 				$this->db->join('Rank', 'Rank.ID_Rank = Org.ID_Org', 'inner');
                 $this->db->join('Type_Org', 'Type_Org.ID_Type_Org = Org.ID_Type_Org', 'inner');
 
-    			if ($SearchArray = '') ? $this->db->where_in('ID_Org', $SearchArray);
+    			if ($Search  == NULL) ? $this->db->where_in('ID_Org', $Search);
 
                 $query = $this->db->get();
                 return ($query->num_rows() > 0) ? $query->result() : FALSE;
@@ -99,7 +121,7 @@ class Selectbd_model extends CI_Model {
                 	return FALSE;
         }
 
-    	public function tct($SearchArray = '')
+    	public function tct($Search = NULL)
         {
         		$this->db->select('ID_TCT, Num_Merchant, Name_TCT,
         						   From_TCT, ID_From_TCT, Kind_Activity,
@@ -111,44 +133,44 @@ class Selectbd_model extends CI_Model {
                 $this->db->join('Kategoria_TCT', 'Kategoria_TCT.ID_Kategoria_TCT = TCT.ID_Kategoria_TCT', 'inner');
                 $this->db->join('MCC', 'MCC.ID_MCC = TCT.ID_MCC', 'inner');
 
-                if ($SearchArray = '') ? $this->db->where_in('ID_TCT', $SearchArray);
+                if ($Search == NULL) ? $this->db->where_in('ID_TCT', $Search);
 
                 $query = $this->db->get();
                 return ($query->num_rows() > 0) ? $query->result() : FALSE;
         }
 
-        public function tid($SearchArray = '')
+        public function tid($Search = NULL)
         {
         		$this->db->select('ID_TID, TPC, GPC,
         						   Kod_Activ, Date_Reg_CA,
         						   Num_TCTID');
         		$this->db->from('TID');
 
-                if ($SearchArray = '') ? $this->db->where_in('ID_TID', $SearchArray);
+                if ($Search  == NULL) ? $this->db->where_in('ID_TID', $Search);
 
                 $query = $this->db->get();
                 return ($query->num_rows() > 0) ? $query->result() : FALSE;
         }
 
-        public function terminal($SearchArray = '')
+        public function terminal($Search = NULL)
         {
         		$this->db->select('ID_Terminal, SN, In_Num, Price, Date, Name_Type_Terminal');
         		$this->db->from('Terminal');
 				$this->db->join('Type_Terminal', 'Type_Terminal.Id_Type_Terminal = Terminal.Id_Type_Terminal', 'inner');
 
-                if ($SearchArray = '') ? $this->db->where_in('ID_Terminal', $SearchArray);
+                if ($Search == NULL) ? $this->db->where_in('ID_Terminal', $Search);
 
                 $query = $this->db->get();
                 return ($query->num_rows() > 0) ? $query->result() : FALSE;
         }
 
-        public function sim($SearchArray = '')
+        public function sim($Search = NULL)
         {
         		$this->db->select('ID_Sim, Num_Sim, Name_Operator');
         		$this->db->from('Sim');
 				$this->db->join('Operator_Sim', 'Operator_Sim.ID_Operator_Sim = Sim.ID_Operator_Sim', 'inner');
 
-                if ($SearchArray = '') ? $this->db->where_in('ID_Sim', $SearchArray);
+                if ($Search == NULL) ? $this->db->where_in('ID_Sim', $Search);
 
                 $query = $this->db->get();
                 return ($query->num_rows() > 0) ? $query->result() : FALSE;
