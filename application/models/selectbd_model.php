@@ -44,55 +44,38 @@ class Selectbd_model extends CI_Model {
                 return ($query->num_rows() > 0) ? if ($BoolOut) ? TRUE : $query->result() : FALSE;
         }
 
-        public function dogovor()
+        public function dogovor($WhereOrIN = '')
         {
-        		if ($this->search_field($this->input->post('SearchFild'), TRUE))
-        		{
-	        		$this->db->select('ID_Dogovor, Num_Dogovor, Date_Dogovor,
-	        						   Diskont, Date_Diskont, Internat_Card,
-	        						   Sber_Card, Money_Movement, Income_Money,
-	        						   Date_Dissolution, thank');
-	        		$this->db->from('Dogovor');
+	    	$this->db->select('ID_Dogovor, Num_Dogovor, Date_Dogovor,
+	        				   Diskont_Dogovor, Date_Diskont_Dogovor, Internat_Card_Dogovor,
+	        				   Debet_Card_Dogovor, Money_Movement_Dogovor, Income_Money_Dogovor,
+	        				   Date_Dissolution_Dogovor, Thank_Dogovor');
+	        $this->db->from('Dogovor');
 
-	        		if ($this->input->post('WhereOrIN') == TRUE)
-	        		{
-	        			$this->db->where_in('ID_Dogovor', $this->search_ID('Dogovor.ID_Dogovor',
-	        											  $this->search_field($this->input->post('SearchFild')),
-	        											  $this->input->post('Search')));
+            $TempArray = array('Num_Dogovor', 'Date_Dogovor',
+	        				   'Diskont_Dogovor', 'Date_Diskont_Dogovor', 'Internat_Card_Dogovor',
+	        				   'Debet_Card_Dogovor', 'Money_Movement_Dogovor', 'Income_Money_Dogovor',
+	        				   'Date_Dissolution_Dogovor', 'Thank_Dogovor');
 
-                    } elseif($this->input->post('WhereOrIN') == FALSE)  {                    	$TempArray = array('Num_Dogovor', 'Date_Dogovor',
-	        						   'Diskont', 'Date_Diskont', 'Internat_Card',
-	        						   'Sber_Card', 'Money_Movement', 'Income_Money',
-	        						   'Date_Dissolution', 'thank');
+            return $this->_querying($WhereOrIN, $TempArray, 'Dogovor', 'ID_Dogovor');
 
-	        	        foreach ( $TempArray as $value ) {
-                        	if (!$this->input->post($value) == '') ? $this->db->where($value, $this->input->post($value)); ;
-						}
-                    }
+	    }
 
-	                $query = $this->db->get();
-	                return ($query->num_rows() > 0) ? $query->result() : FALSE;
-
-        		} Else: return FALSE;
-        }
-
-        public function org($Search = NULL)
+        public function org($WhereOrIN = '')
         {
-        		$this->db->select('ID_Org, INN, Name_Org,
-        						   ID_FromS_Org, FromH, ID_PostS_Org,
-        						   PostH, FIO_LPR, Phone_LPR,
-        						   E_mail, OKPO, OGRN, Bank_Name,
-        						   Current_Account, Correspondent_Account,
-        						   Name_Rank_Users, Name_Type_Org');
+        		$this->db->select('ID_Org, INN_Org, Name_Org,
+        						   ID_Post_Address_Org, ID_Juristical_Address_Org,
+        						   FIO_Boss_Org, Name_Type_Rank_Org, E_Mail_Org, Phone_Boss_Org');
 
         		$this->db->from('Org');
-				$this->db->join('Rank', 'Rank.ID_Rank = Org.ID_Org', 'inner');
+				$this->db->join('Type_Rank_Org', 'Type_Rank_Org.ID_Type_Rank_Org = Org.ID_Org', 'inner');
                 $this->db->join('Type_Org', 'Type_Org.ID_Type_Org = Org.ID_Type_Org', 'inner');
 
-    			if ($Search  == NULL) ? $this->db->where_in('ID_Org', $Search);
+                $TempArray = array('INN_Org', 'Name_Type_Org', 'Name_Org', 'ID_Post_Address_Org',
+                				   'ID_Juristical_Address_Org', 'FIO_Boss_Org',
+                				   'Name_Type_Rank_Org', 'E_Mail_Org', 'Phone_Boss_Org');
 
-                $query = $this->db->get();
-                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+                return $this->_querying($WhereOrIN, $TempArray, 'Org', 'ID_Org');
         }
 
         public function address_out($Search = '', $CityTRUE = FALSE)
@@ -135,59 +118,90 @@ class Selectbd_model extends CI_Model {
                 	return FALSE;
         }
 
-    	public function tct($Search = NULL)
+    	public function tct($WhereOrIN = '')
         {
-        		$this->db->select('ID_TCT, Num_Merchant, Name_TCT,
-        						   From_TCT, ID_From_TCT, Kind_Activity,
-        						   Mode, Contact_Name, Rank_Contact_Name,
-        						   Phone_TCT, Name_Status_TCT,
-        						   Name_Kategoria_TCT, Name_MCC');
+
+        		$this->db->select('ID_TCT, Num_Merchant_TCT, Name_TCT,
+        						   Phone_TCT, Contact_Name_TCT, ID_Address_TCT,
+        						   Name_Type_Kategoria_TCT, Name_Type_MCC_TCT,
+        						   Mode_TCT');
         		$this->db->from('TCT');
-				$this->db->join('Status_TCT', 'Status_TCT.ID_Status_TCT = TCT.ID_Status_TCT', 'inner');
-                $this->db->join('Kategoria_TCT', 'Kategoria_TCT.ID_Kategoria_TCT = TCT.ID_Kategoria_TCT', 'inner');
-                $this->db->join('MCC', 'MCC.ID_MCC = TCT.ID_MCC', 'inner');
+                $this->db->join('Type_Kategoria_TCT', 'Type_Kategoria_TCT.ID_Type_Kategoria_TCT = TCT.ID_Type_Kategoria_TCT', 'inner');
+                $this->db->join('Type_MCC_TCT', 'Type_MCC_TCT.ID_Type_MCC_TCT = TCT.ID_Type_MCC_TCT', 'inner');
 
-                if ($Search == NULL) ? $this->db->where_in('ID_TCT', $Search);
+                $TempArray = array('Num_Merchant_TCT', 'Name_TCT',
+        						   'Phone_TCT', 'Contact_Name_TCT', 'ID_Address_TCT',
+        						   'Name_Type_Kategoria_TCT', 'Name_Type_MCC_TCT',
+        						   'Mode_TCT');
 
-                $query = $this->db->get();
-                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+                return $this->_querying($WhereOrIN, $TempArray, 'TCT', 'ID_TCT');
         }
 
-        public function tid($Search = NULL)
+        public function tid($WhereOrIN = '')
         {
-        		$this->db->select('ID_TID, TPC, GPC,
-        						   Kod_Activ, Date_Reg_CA,
-        						   Num_TCTID');
+        		$this->db->select('ID_TID, Num_TID,
+        						   Kod_Activ_TID, Date_Reg_CA_TID');
         		$this->db->from('TID');
+          		$TempArray = array('Num_TID', 'Kod_Activ_TID', 'Date_Reg_CA_TID');
 
-                if ($Search  == NULL) ? $this->db->where_in('ID_TID', $Search);
-
-                $query = $this->db->get();
-                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+                return $this->_querying($WhereOrIN, $TempArray, 'TID', 'ID_TID');
         }
 
-        public function terminal($Search = NULL)
+        public function terminal($WhereOrIN = '')
         {
-        		$this->db->select('ID_Terminal, SN, In_Num, Price, Date, Name_Type_Terminal');
+
+        		$this->db->select('ID_Terminal, SN_Num_Terminal, Inv_Num_Terminal, Price_Terminal, Date_Terminal, Name_Type_Terminal');
         		$this->db->from('Terminal');
 				$this->db->join('Type_Terminal', 'Type_Terminal.Id_Type_Terminal = Terminal.Id_Type_Terminal', 'inner');
 
-                if ($Search == NULL) ? $this->db->where_in('ID_Terminal', $Search);
+    			$TempArray = array('SN_Num_Terminal', 'Inv_Num_Terminal',
+    							   'Price_Terminal', 'Date_Terminal',
+    							   'Name_Type_Terminal');
 
-                $query = $this->db->get();
-                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+                return $this->_querying($WhereOrIN, $TempArray, 'Terminal', 'ID_Terminal');
         }
 
-        public function sim($Search = NULL)
+        public function pinpad($WhereOrIN = '')
         {
-        		$this->db->select('ID_Sim, Num_Sim, Name_Operator');
+        		$this->db->select('ID_PinPad, Name_Type_PinPad, SN_Num_PinPad');
+        		$this->db->from('PinPad');
+				$this->db->join('Type_PinPad', 'Type_PinPad.ID_Type_PinPad = PinPad.ID_Type_PinPad', 'inner');
+
+                $TempArray = array('Name_Type_PinPad', 'SN_Num_PinPad');
+                return $this->_querying($WhereOrIN, $TempArray, 'PinPad', 'ID_PinPad');
+        }
+
+        public function sim($WhereOrIN = '')
+        {
+        		$this->db->select('ID_Sim, SN_Num_Sim, Name_Type_Operator_Sim');
         		$this->db->from('Sim');
-				$this->db->join('Operator_Sim', 'Operator_Sim.ID_Operator_Sim = Sim.ID_Operator_Sim', 'inner');
+				$this->db->join('Type_Operator_Sim', 'Type_Operator_Sim.ID_Type_Operator_Sim = Sim.ID_Type_Operator_Sim', 'inner');
 
-                if ($Search == NULL) ? $this->db->where_in('ID_Sim', $Search);
+                $TempArray = array('SN_Num_Sim', 'Name_Type_Operator_Sim');
 
-                $query = $this->db->get();
-                return ($query->num_rows() > 0) ? $query->result() : FALSE;
+                return $this->_querying($WhereOrIN, $TempArray, 'Sim', 'ID_Sim');
+        }
+
+        function _querying($WhereOrIN = '', $ArrayFields = '', $Tabel = '', $IDFields = '')
+        {
+	        	if ($WhereOrIN)
+	        	{
+	        		$this->db->where_in($Tabel, $this->search_ID($Tabel.'.'.$IDFields,
+	        									  $this->search_field($this->input->post('SearchFild')),
+	        									  $this->input->post('Search')));
+
+           		}
+             		elseif(!$WhereOrIN)
+                {
+
+	        	    foreach ( $ArrayFields as $value ) {
+	        	        $TempValue = $this->input->post($value);
+
+	        	        if (!$TempValue == NULL && !$TempValue == '') ? $this->db->where($value, $TempValue);
+					}
+      			}
+
+	                return $this->db->get();
         }
 
 }

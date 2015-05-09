@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dogovor extends CI_Controller {
+class Tct extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -29,12 +29,11 @@ class Dogovor extends CI_Controller {
 
 	public function index()
 	{
-        $cell = array('data' => $this->_gen_tabel($this->selectbd->dogovor()), 'colspan' => 10);
+        $cell = array('data' => $this->_gen_tabel($this->selectbd->tct()), 'colspan' => 10);
 	    $this->table->clear();
 
-		$this->table->set_heading('Номер', 'Дата', 'Дисконт', 'Дата дисконта',
-								  'Международные карты', 'Дебетовые карты',
-								  'Оборот', 'Спасибо', 'Дата расторжения');
+		$this->table->set_heading('Номер мерчанта', 'Название', 'Контактное лицо',
+								  'Телефон', 'Адрес', 'Категория', 'МСС', 'Режим работы');
 
 		$this->table->add_row($cell);
   		$data['table'] = $this->table->generate();
@@ -52,12 +51,11 @@ class Dogovor extends CI_Controller {
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->dogovor(TRUE)), 'colspan' => 10);
+	        $cell = array('data' => $this->_gen_tabel($this->selectbd->tct(TRUE)), 'colspan' => 10);
 		    $this->table->clear();
 
-			$this->table->set_heading('Номер', 'Дата', 'Дисконт', 'Дата дисконта',
-									  'Международные карты', 'Дебетовые карты',
-									  'Оборот', 'Спасибо', 'Дата расторжения');
+		$this->table->set_heading('Номер мерчанта', 'Название', 'Контактное лицо',
+								  'Телефон', 'Адрес', 'Категория', 'МСС', 'Режим работы');
 
 			$this->table->add_row($cell);
 	  		$data['table'] = $this->table->generate();
@@ -66,7 +64,7 @@ class Dogovor extends CI_Controller {
 
 	public function Filter()
 	{
-		Echo $this->_gen_tabel($this->selectbd->dogovor(FALSE));
+		Echo $this->_gen_tabel($this->selectbd->tct(FALSE));
 	}
 
 	function _gen_tabel($query)
@@ -75,16 +73,14 @@ class Dogovor extends CI_Controller {
         	{
 				foreach ($query->result() as $row)
 				{
-						$TempArray = Array( $row['Num_Dogovor'],
-						       			    $row['Date_Dogovor'],
-						       			    $row['Diskont'],
-						       				$row['Date_Diskont'],
-						       				$row['Internat_Card'],
-						       				$row['Sber_Card'],
-						       				$row['Money_Movement'],
-						       				$row['Income_Money'],
-						       				$row['Date_Dissolution'],
-						       				$row['thank']
+						$TempArray = Array( $row['Num_Merchant_TCT'],
+						       			    $row['Name_TCT'],
+						       			    $row['Contact_Name_TCT'],
+						       				$row['Phone_TCT'],
+						       				$row['ID_Address_TCT'],
+						       				$row['Name_Type_Kategoria_TCT'],
+						       				$row['Name_Type_MCC_TCT'],
+						       				$row['Mode_TCT']
 					    );
 
 						$this->table->add_row($TempArray);
