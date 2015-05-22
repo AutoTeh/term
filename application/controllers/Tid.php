@@ -50,7 +50,7 @@ class Tid extends CI_Controller {
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->tid(TRUE)), 'colspan' => 10);
+	        $cell = array('data' => $this->_gen_tabel($this->selectbd->tid(TRUE)), 'colspan' => 10, 'cellpadding' => '0');
 		    $this->table->clear();
 
 			$this->table->set_heading('Номер терминала', 'Код активации', 'Дата регистрации ЦА');

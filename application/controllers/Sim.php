@@ -50,7 +50,7 @@ class Sim extends CI_Controller {
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->sim(TRUE)), 'colspan' => 10);
+	        $cell = array('data' => $this->_gen_tabel($this->selectbd->sim(TRUE)), 'colspan' => 10, 'cellpadding' => '0');
 		    $this->table->clear();
 
 			$this->table->set_heading('Оператор', 'Сирийный номер');
@@ -71,8 +71,8 @@ class Sim extends CI_Controller {
         	{
 				foreach ($query->result() as $row)
 				{
-						$TempArray = Array( $row['SN_Num_Sim'],
-						       			    $row['Name_Type_Operator_Sim']
+						$TempArray = Array( $row['SN_Num_SIM'],
+						       			    $row['Name_Type_Operator_SIM']
 					    );
 
 						$this->table->add_row($TempArray);

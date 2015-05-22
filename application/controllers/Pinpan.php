@@ -50,7 +50,7 @@ class Pinpad extends CI_Controller {
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->pinpad(TRUE)), 'colspan' => 10);
+	        $cell = array('data' => $this->_gen_tabel($this->selectbd->pinpad(TRUE)), 'colspan' => 10, 'cellpadding' => '0');
 		    $this->table->clear();
 
 			$this->table->set_heading('Модель', 'Сирийный номер');

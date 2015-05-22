@@ -23,72 +23,102 @@ class Org extends CI_Controller {
     {
     	parent::__construct();
 
-    	$this->load->model('selectbd');
     	$this->load->library('table');
+
+	    //$this->table->set_heading('–ò–ù–ù', '–ù–∞–∑–≤–∞–Ω–∏–µ –æ—Ä–≥–∞–Ω–∏–∑–∞—Ü–∏–∏', '–Æ—Ä. –∞–¥—Ä–µ—Å',
+	    //   						  '–ü–æ—á—Ç–æ–≤—ã–π –∞–¥—Ä–µ—Å', '–§–ò–û —Ä—É–∫–æ–≤–æ–¥–∏—Ç–µ–ª—è', '–î–æ–ª–∂–Ω–æ—Å—Ç—å',
+		//						  '–¢–µ–ª–µ—Ñ–æ–Ω —Ä—É–∫–æ–≤–æ–¥–∏—Ç–µ–ª—è', 'E-mail', '–ù–∞—Å—Ç—Ä–æ–π–∫–∏');
+
+	    $this->table->set_heading('–ò–ù–ù', '–ù–∞–∑–≤–∞–Ω–∏–µ –æ—Ä–≥–∞–Ω–∏–∑–∞—Ü–∏–∏', '–§–ò–û —Ä—É–∫–æ–≤–æ–¥–∏—Ç–µ–ª—è',
+								  '–¢–µ–ª–µ—Ñ–æ–Ω —Ä—É–∫–æ–≤–æ–¥–∏—Ç–µ–ª—è', 'E-mail', '–ù–∞—Å—Ç—Ä–æ–π–∫–∏');
     }
 
 	public function index()
 	{
-        $cell = array('data' => $this->_gen_tabel($this->selectbd->org()), 'colspan' => 10);
-	    $this->table->clear();
+		$tmpl = array ( 'table_open'  => '<table id="head" cellspacing="0" >' );
+		$this->table->set_template($tmpl);
 
-		$this->table->set_heading('»ÕÕ', 'Õ‡Á‚‡ÌËÂ Ó„‡ÌËÁ‡ˆËË', 'ﬁ. ‡‰ÂÒ', 'œÓ˜ÚÓ‚˚È ‡‰ÂÒ',
-								  '‘»Œ ÛÍÓ‚Ó‰ËÚÂÎˇ', 'ƒÓÎÊÌÓÒÚ¸', '“ÂÎÂÙÓÌ ÛÍÓ‚Ó‰ËÚÂÎˇ',
-								  'E-mail');
+  		$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->org(), 'Org'),
+			   		   'js' 			=> 'var tf2 = setFilterGrid("head", table_Props_head);',
+			   		   'Page' 			=> 'table',
+			   		   'CountColTable' 	=> $this->Gen_table->CountCol-1,
+			   		   'IDTable'        => 'head',
+        			   'Title' 			=> '–û—Ä–≥–∞–Ω–∏–∑–∞—Ü–∏–∏');
 
-		$this->table->add_row($cell);
-  		$data['table'] = $this->table->generate();
-
-		$this->load->view('main',$data);
+		$this->load->view('main', $data);
 	}
 
 	public function FilterID()
 	{
-
 	  	$this->form_validation->set_rules(array('field' => 'Search',
 		  										'rules' => 'integer',
-		  										'errors' => array('required' => 'œÂÂ‰‡Ì ÌÂ ‚ÂÌ˚È »ƒ.')
+		  										'errors' => array('required' => '–ü–µ—Ä–µ–¥–∞–Ω –Ω–µ –≤–µ—Ä–Ω—ã–π –ò–î.')
 	  				  							));
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->org(TRUE)), 'colspan' => 10);
-		    $this->table->clear();
+	    	$ID = 'Org_'.$this->input->post('Search');
 
-		$this->table->set_heading('»ÕÕ', 'Õ‡Á‚‡ÌËÂ Ó„‡ÌËÁ‡ˆËË', 'ﬁ. ‡‰ÂÒ', 'œÓ˜ÚÓ‚˚È ‡‰ÂÒ',
-								  '‘»Œ ÛÍÓ‚Ó‰ËÚÂÎˇ', 'ƒÓÎÊÌÓÒÚ¸', '“ÂÎÂÙÓÌ ÛÍÓ‚Ó‰ËÚÂÎˇ',
-								  'E-mail');
+	    	$tmpl = array ( 'table_open'  => '<table id="'.$ID.'" cellspacing="0" >' );
+			$this->table->set_template($tmpl);
 
-			$this->table->add_row($cell);
-	  		$data['table'] = $this->table->generate();
-        } Else: Echo validation_errors();
-	}
+			$data = array ('table' 			=> $this->Gen_table->Out($this->Selectbd->org(TRUE), 'Org', TRUE),
+						   'CountColTable' 	=> $this->Gen_table->CountCol-1,
+						   'IDTable'        => $ID,
+						   'js' 			=> 'var tf2_'.$ID.' = setFilterGrid("'.$ID.'",table_Props_'.$ID.');'
+						   );
 
-	public function Filter()
-	{
-		Echo $this->_gen_tabel($this->selectbd->org(FALSE));
+            $this->load->view('table', $data);
+
+        } Else Echo validation_errors();
 	}
 
 	function _gen_tabel($query)
 	{
         	if ($query->num_rows() > 0)
         	{
-				foreach ($query->result() as $row)
+        		$this->table->add_row(array('data' => '', 'colspan' => 6));
+				foreach ($query->result_array() as $row)
 				{
 						$TempArray = Array( $row['INN_Org'],
 						       			    $row['Name_Org'],
-						       			    $this->selectbd->address_out($row['ID_Juristical_Address_Org']),
-						       				$this->selectbd->address_out($row['ID_Post_Address_Org']),
+						       			    //$this->Selectbd->address_out($row['ID_Juristical_Address_Org']),
+						       				//$this->Selectbd->address_out($row['ID_Post_Address_Org']),
 						       				$row['FIO_Boss_Org'],
-						       				$row['Name_Type_Rank_Org'],
+						       				//$row['Name_Type_Rank_Org'],
 						       				$row['Phone_Boss_Org'],
-						       				$row['E_Mail_Org']
-					    );
+						       				$row['E_Mail_Org'],
+						       				array('data' => $this->_gen_button($row['ID_Org']), 'align' => 'center'));
 
 						$this->table->add_row($TempArray);
+						$this->table->add_row(array('data' => '<div id="FilterTabel" class="Org_'.$row['ID_Org'].'"></div>', 'colspan' => 6));
 				}
-		        	 Return $this->table->generate();
-            } Else : Return 'ÕÂÚ ‰‡ÌÌ˚ı';
+                    Return $this->table->generate();
+            } Else  Return '–ù–µ—Ç –¥–∞–Ω–Ω—ã—Ö';
+	}
+
+	function _gen_button($id)
+	{
+		$Dogovor 	= "ReceiveTabelFilterID(".$id.", 'dogovor', 'Org', 'ID_Org');return false";
+		$TCT 		= "ReceiveTabelFilterID(".$id.", 'tct', 'Org', 'ID_Org');return false";
+		$TID 		= "ReceiveTabelFilterID(".$id.", 'tid', 'Org', 'ID_Org');return false";
+		$Terminal 	= "ReceiveTabelFilterID(".$id.", 'terminal', 'Org', 'ID_Org');return false";
+		$Pinpad 	= "ReceiveTabelFilterID(".$id.", 'pinpad', 'Org', 'ID_Org');return false";
+		$sim 		= "ReceiveTabelFilterID(".$id.", 'sim', 'Org', 'ID_Org');return false";
+
+		return  '
+			<div class="btn-group">
+		  <a class="btn btn-primary btn-mini" href="#"><i class="icon-info-sign icon-white"></i> </a>
+		  <a class="btn btn-primary btn-mini dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+		  <ul align ="left" class="dropdown-menu">
+		  	<li><a href="#" onclick="'.$Dogovor.'"> –î–æ–≥–æ–≤–æ—Ä</a></li>
+		    <li><a href="#" onclick="'.$TCT.'"> –¢–°–¢</a></li>
+		    <li><a href="#" onclick="'.$TID.'"> TID</a></li>
+		    <li><a href="#" onclick="'.$Terminal.'"> –¢–µ—Ä–º–∏–Ω–∞–ª</a></li>
+		    <li><a href="#" onclick="'.$Pinpad.'"> –ü–∏–Ω–ø–∞–¥</a></li>
+		    <li><a href="#" onclick="'.$sim.'"> SIM-–∫–∞—Ä—Ç—ã</a></li>
+		  </ul>
+		</div>';
 	}
 
 

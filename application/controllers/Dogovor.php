@@ -19,78 +19,120 @@ class Dogovor extends CI_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 
+	public $rows_always_visible = '';
+
  	public function __construct()
     {
     	parent::__construct();
 
-    	$this->load->model('selectbd');
+    	$this->load->model('Selectbd_model', 'Selectbd');
     	$this->load->library('table');
+
+  		$this->table->set_heading('РќРѕРјРµСЂ', 'Р”Р°С‚Р°', 'Р”РёСЃРєРѕРЅС‚', 'Р”Р°С‚Р° РґРёСЃРєРѕРЅС‚Р°', 'РњРµР¶РґСѓРЅР°СЂРѕРґРЅС‹Рµ РєР°СЂС‚С‹',
+           						  'Р”РµР±РµС‚РѕРІС‹Рµ РєР°СЂС‚С‹', 'РћР±РѕСЂРѕС‚', 'Р”РѕС…РѕРґ', 'РЎРїР°СЃРёР±Рѕ', 'Р”Р°С‚Р° СЂР°СЃС‚РѕСЂР¶РµРЅРёСЏ',
+								  'РќР°СЃС‚СЂРѕР№РєРё');
     }
 
 	public function index()
 	{
-        $cell = array('data' => $this->_gen_tabel($this->selectbd->dogovor()), 'colspan' => 10);
-	    $this->table->clear();
+		$tmpl = array ( 'table_open'  => '<table id="head" cellspacing="0" >' );
+		$this->table->set_template($tmpl);
 
-		$this->table->set_heading('Номер', 'Дата', 'Дисконт', 'Дата дисконта',
-								  'Международные карты', 'Дебетовые карты',
-								  'Оборот', 'Спасибо', 'Дата расторжения');
+  		$data = array ('Table' 			=> $this->_gen_tabel($this->Selectbd->dogovor()),
+					   'js' 			=> 'var tf2 = setFilterGrid("head", table_Props_head);',
+        			   'Page' 			=> 'table',
+        			   'CountColTable' 	=> 10,
+        			   'Title' 			=> 'Р”РѕРіРѕРІРѕСЂС‹',
+        			   'IDTable'        => 'head');
 
-		$this->table->add_row($cell);
-  		$data['table'] = $this->table->generate();
-
-		$this->load->view('main',$data);
+		$this->load->view('main', $data);
 	}
 
 	public function FilterID()
 	{
-
-	  	$this->form_validation->set_rules(array('field' => 'Search',
-		  										'rules' => 'integer',
-		  										'errors' => array('required' => 'Передан не верный ИД.')
-	  				  							));
+  		$this->form_validation->set_rules('search', 'ID', 'required|integer');
+  		$this->form_validation->set_rules('searchfild', 'РџРѕР»СЏ РїРѕРёСЃРєР°', 'callback_valid_post_filter_field');
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->dogovor(TRUE)), 'colspan' => 10);
-		    $this->table->clear();
+            $this->Selectbd->SearchFild = $this->input->post('searchfild');
+			$this->Selectbd->Search = $this->input->post('search');
+	    	$ID = 'Dogovor_'.$this->Selectbd->Search;
+	    	$tmpl = array ( 'table_open'  => '<table id="'.$ID.'" cellspacing="0">' );
+			$this->table->set_template($tmpl);
 
-			$this->table->set_heading('Номер', 'Дата', 'Дисконт', 'Дата дисконта',
-									  'Международные карты', 'Дебетовые карты',
-									  'Оборот', 'Спасибо', 'Дата расторжения');
+			$data = array ('Table' 	=> $this->_gen_tabel($this->Selectbd->dogovor(TRUE), TRUE),
+						   'CountColTable' 	=> 11,
+						   'IDTable'        => $ID,
+                           'js' 	=> '');
+  			$this->load->view('table', $data);
 
-			$this->table->add_row($cell);
-	  		$data['table'] = $this->table->generate();
-        } Else: Echo validation_errors();
+        } Else {
+        	$this->load->view('err');
+        }
 	}
 
-	public function Filter()
+	public function valid_post_filter_field($value)
 	{
-		Echo $this->_gen_tabel($this->selectbd->dogovor(FALSE));
+		if ($this->db->field_exists($value, 'Dogovor'))
+		{
+			$this->form_validation->set_message('valid_post_filter_field', 'РџРµСЂРµРґР°РЅРѕ РЅРµ РІРµСЂРЅРѕРµ РёРјСЏ {field}.');
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
 	}
 
-	function _gen_tabel($query)
+
+	function _gen_tabel($query, $FlagFilterID = FALSE)
 	{
         	if ($query->num_rows() > 0)
-        	{
-				foreach ($query->result() as $row)
+        	{   if (!$FlagFilterID) { $this->table->add_row(array('data' => '', 'colspan' => 11));}
+				foreach ($query->result_array() as $row)
 				{
 						$TempArray = Array( $row['Num_Dogovor'],
 						       			    $row['Date_Dogovor'],
-						       			    $row['Diskont'],
-						       				$row['Date_Diskont'],
-						       				$row['Internat_Card'],
-						       				$row['Sber_Card'],
-						       				$row['Money_Movement'],
-						       				$row['Income_Money'],
-						       				$row['Date_Dissolution'],
-						       				$row['thank']
-					    );
+						       			    $row['Diskont_Dogovor'],
+						       				$row['Date_Diskont_Dogovor'],
+						       				$row['Internat_Card_Dogovor'],
+						       				$row['Debet_Card_Dogovor'],
+						       				$row['Money_Movement_Dogovor'],
+						       				$row['Money_Income_Dogovor'],
+						       				$row['Thank_Dogovor'],
+						       				$row['Date_Dissolution_Dogovor'],
+						       				$this->_gen_button($row['ID_Dogovor'], 'disabled'));
 
 						$this->table->add_row($TempArray);
+						if (!$FlagFilterID) $this->table->add_row(array('data' => '<div id="FilterTabel" class="dogovor_'.$row['ID_Dogovor'].'"></div>', 'colspan' => 11));
+
 				}
 		        	 Return $this->table->generate();
-            } Else : Return 'Нет данных';
+            } Else   Return 'РќРµС‚ РґР°РЅРЅС‹С…';
+	}
+
+	function _gen_button($id, $DisableFlag = '')
+	{
+		$Org 		= "ReceiveTabelFilterID(".$id.", 'org', 'dogovor', 'ID_Dogovor');return false";
+		$TCT 		= "ReceiveTabelFilterID(".$id.", 'tct', 'dogovor', 'ID_Dogovor');return false";
+		$TID 		= "ReceiveTabelFilterID(".$id.", 'tid', 'dogovor', 'ID_Dogovor');return false";
+		$Terminal 	= "ReceiveTabelFilterID(".$id.", 'terminal', 'dogovor', 'ID_Dogovor');return false";
+		$Pinpad 	= "ReceiveTabelFilterID(".$id.", 'pinpad', 'dogovor', 'ID_Dogovor');return false";
+		$sim 		= "ReceiveTabelFilterID(".$id.", 'sim', 'dogovor', 'ID_Dogovor');return false";
+
+		return  '<div class="btn-group">
+		  <a class="btn btn-primary btn-mini" href="#"><i class="icon-info-sign icon-white"></i></a>
+		  <a class="btn btn-primary btn-mini dropdown-toggle '.$DisableFlag.'" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+		  <ul class="dropdown-menu">
+		  	<li><a href="#" onclick="'.$Org.'"> РћСЂРіР°РЅРёР·Р°С†РёСЏ</a></li>
+		    <li><a href="#" onclick="'.$TCT.'"> РўРЎРў</a></li>
+		    <li><a href="#" onclick="'.$TID.'"> TID</a></li>
+		    <li><a href="#" onclick="'.$Terminal.'"> РўРµСЂРјРёРЅР°Р»</a></li>
+		    <li><a href="#" onclick="'.$Pinpad.'"> РџРёРЅРїР°Рґ</a></li>
+		    <li><a href="#" onclick="'.$sim.'"> SIM-РєР°СЂС‚С‹</a></li>
+		  </ul>
+		</div>';
 	}
 
 

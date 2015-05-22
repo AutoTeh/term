@@ -32,8 +32,21 @@ class Tct extends CI_Controller {
         $cell = array('data' => $this->_gen_tabel($this->selectbd->tct()), 'colspan' => 10);
 	    $this->table->clear();
 
-		$this->table->set_heading('Íîìåğ ìåğ÷àíòà', 'Íàçâàíèå', 'Êîíòàêòíîå ëèöî',
-								  'Òåëåôîí', 'Àäğåñ', 'Êàòåãîğèÿ', 'ÌÑÑ', 'Ğåæèì ğàáîòû');
+		$data = array('id' => 'Tabel',
+					  'onkeypress'  => 'Javascript: if (event.keyCode==13) ReceiveTabelFilter("Dogovor");');
+
+	    $this->table->set_heading('Íîìåğ ìåğ÷àíòà'.form_input_new($data, 'INN_Org'),
+	       						  'Íàçâàíèå'.form_input_new($data, 'Name_Org'),
+	       						  'Êîíòàêòíîå ëèöî'.form_input_new($data, 'ID_Juristical_Address_Org'),
+	       						  'Òåëåôîí'.form_input_new($data, 'ID_Post_Address_Org'),
+		  					      'Àäğåñ'.form_input_new($data, 'FIO_Boss_Org'),
+		   					      'Êàòåãîğèÿ'.form_input_new($data, 'Name_Type_Rank_Org'),
+								  'ÌÑÑ'.form_input_new($data, 'Phone_Boss_Org'),
+								  'Ğåæèì ğàáîòû'.form_input_new($data, 'E_Mail_Org'),
+								  'Íàñòğîéêè');
+
+		//$this->table->set_heading('Íîìåğ ìåğ÷àíòà', 'Íàçâàíèå', 'Êîíòàêòíîå ëèöî',
+		//						  'Òåëåôîí', 'Àäğåñ', 'Êàòåãîğèÿ', 'ÌÑÑ', 'Ğåæèì ğàáîòû');
 
 		$this->table->add_row($cell);
   		$data['table'] = $this->table->generate();
@@ -51,11 +64,21 @@ class Tct extends CI_Controller {
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->tct(TRUE)), 'colspan' => 10);
+	        $cell = array('data' => $this->_gen_tabel($this->selectbd->tct(TRUE)), 'colspan' => 10, 'cellpadding' => '0');
 		    $this->table->clear();
 
-		$this->table->set_heading('Íîìåğ ìåğ÷àíòà', 'Íàçâàíèå', 'Êîíòàêòíîå ëèöî',
-								  'Òåëåôîí', 'Àäğåñ', 'Êàòåãîğèÿ', 'ÌÑÑ', 'Ğåæèì ğàáîòû');
+			$data = array('id' => 'Tabel',
+						  'onkeypress'  => 'Javascript: if (event.keyCode==13) ReceiveTabelFilter("Dogovor");');
+
+	    	$this->table->set_heading('Íîìåğ ìåğ÷àíòà'.form_input_new($data, 'Num_Merchant_TCT'),
+	       							  'Íàçâàíèå'.form_input_new($data, 'Name_TCT'),
+	       							  'Êîíòàêòíîå ëèöî'.form_input_new($data, 'Contact_Name_TCT'),
+	       							  'Òåëåôîí'.form_input_new($data, 'Phone_TCT'),
+		  						      'Àäğåñ'.form_input_new($data, 'ID_Address_TCT'),
+		   					    	  'Êàòåãîğèÿ'.form_input_new($data, 'Name_Type_Kategoria_TCT'),
+									  'ÌÑÑ'.form_input_new($data, 'Name_Type_MCC_TCT'),
+									  'Ğåæèì ğàáîòû'.form_input_new($data, 'Mode_TCT'),
+									  'Íàñòğîéêè');
 
 			$this->table->add_row($cell);
 	  		$data['table'] = $this->table->generate();
