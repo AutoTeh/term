@@ -6,6 +6,8 @@ class Selectbd_model extends CI_Model {
     	public $Description_Fields = array();
         public $SearchFild;
         public $Search;
+        public $Tabel;
+        public $join = array();
 
         public function __construct()
         {
@@ -36,21 +38,23 @@ class Selectbd_model extends CI_Model {
 
 					} Else $TempArr = 'NULL';
 
-
-	                return $TempArr;
+                    return $TempArr;
         }
 
         public function dogovor($WhereOrIN = FALSE)
         {
-            return $this->_querying($WhereOrIN, 'Dogovor', 'ID_Dogovor');
+        	$this->Tabel = 'Dogovor';
+            return $this->_querying($WhereOrIN);
 	    }
 
         public function org($WhereOrIN = FALSE)
         {
-			$this->db->join('Type_Rank_Org', 'Type_Rank_Org.ID_Type_Rank_Org = Org.ID_Org', 'inner');
-   			$this->db->join('Type_Org', 'Type_Org.ID_Type_Org = Org.ID_Type_Org', 'inner');
+			$this->join = array(
+				  		  array('Type_Rank_Org', 'Type_Rank_Org.ID_Type_Rank_Org = Org.ID_Org', 'left'),
+   				  		  array('Type_Org', 'Type_Org.ID_Type_Org = Org.ID_Type_Org', 'left'));
 
-        	return $this->_querying($WhereOrIN, 'Org', 'ID_Org');
+            $this->Tabel = 'Org';
+        	return $this->_querying($WhereOrIN);
         }
 
         public function address_out($Search = '', $CityTRUE = FALSE)
@@ -95,70 +99,83 @@ class Selectbd_model extends CI_Model {
 
     	public function tct($WhereOrIN = FALSE)
         {
-        	$this->db->join('Type_Kategoria_TCT', 'Type_Kategoria_TCT.ID_Type_Kategoria_TCT = TCT.ID_Type_Kategoria_TCT', 'inner');
-            $this->db->join('Type_MCC_TCT', 'Type_MCC_TCT.ID_Type_MCC_TCT = TCT.ID_Type_MCC_TCT', 'inner');
+        	$this->join = array(
+        		  		  array('Type_Kategoria_TCT', 'Type_Kategoria_TCT.ID_Type_Kategoria_TCT = TCT.ID_Type_Kategoria_TCT', 'inner'),
+            	  		  array('Type_MCC_TCT', 'Type_MCC_TCT.ID_Type_MCC_TCT = TCT.ID_Type_MCC_TCT', 'inner'));
 
-         	return $this->_querying($WhereOrIN, 'TCT', 'ID_TCT');
+            $this->Tabel = 'TCT';
+         	return $this->_querying($WhereOrIN);
         }
 
         public function tid($WhereOrIN = FALSE)
         {
-            return $this->_querying($WhereOrIN, 'TID', 'ID_TID');
+        	$this->Tabel = 'TID';
+            return $this->_querying($WhereOrIN);
         }
 
         public function terminal($WhereOrIN = FALSE)
         {
-			$this->db->join('Type_Terminal', 'Type_Terminal.Id_Type_Terminal = Terminal.Id_Type_Terminal', 'inner');
+			$this->join = array(array('Type_Terminal', 'Type_Terminal.Id_Type_Terminal = Terminal.Id_Type_Terminal', 'inner'));
 
-             return $this->_querying($WhereOrIN, 'Terminal', 'ID_Terminal');
+            $this->Tabel = 'Terminal';
+   			return $this->_querying($WhereOrIN);
         }
 
         public function pinpad($WhereOrIN = FALSE)
         {
-			$this->db->join('Type_PinPad', 'Type_PinPad.ID_Type_PinPad = PinPad.ID_Type_PinPad', 'inner');
+			$this->join = array(array('Type_PinPad', 'Type_PinPad.ID_Type_PinPad = PinPad.ID_Type_PinPad', 'inner'));
 
-   			return $this->_querying($WhereOrIN, 'PinPad', 'ID_PinPad');
+            $this->Tabel = 'PinPad';
+   			return $this->_querying($WhereOrIN);
         }
 
         public function sim($WhereOrIN = FALSE)
         {
-        	$this->db->join('Type_Operator_SIM', 'Type_Operator_SIM.ID_Type_Operator_SIM = SIM.ID_Type_Operator_SIM', 'nner');
+        	$this->join = array(array('Type_Operator_SIM', 'Type_Operator_SIM.ID_Type_Operator_SIM = SIM.ID_Type_Operator_SIM', 'nner'));
 
-         	return $this->_querying($WhereOrIN, 'SIM', 'ID_SIM');
+            $this->Tabel = 'SIM';
+         	return $this->_querying($WhereOrIN);
         }
 
-        function _querying($WhereOrIN = FALSE, $Tabel = '', $IDFields = '')
+        function _querying($WhereOrIN = FALSE)
         {
-        		$this->db->reset_query();
+                $Head = $this->_Head_String();
 	        	if ($WhereOrIN)
 	        	{
-                    $this->db->where_in($Tabel.'.'.$IDFields, $this->search_ID($Tabel, $IDFields));
+                    $this->db->where_in($this->Tabel.'.ID_'.$this->Tabel, $this->search_ID($this->Tabel, 'ID_'.$this->Tabel));
            		}
-        		$this->db->select($this->_Head_String($Tabel));
-        		$this->db->from($Tabel);
 
+           		$this->db->select($Head);
+        		$this->db->from($this->Tabel);
+
+				foreach ($this->join as $row)
+				{					$this->db->join($row[0], $row[1], $row[2]);
+				}
+                $this->db->limit(1);
 	            return $this->db->get();
         }
 
-        function _Head_String($Tabel = '')
+        function _Head_String()
         {
-			if (!$Tabel == '')
+			if (!$this->Tabel == '')
 			{
+
 	            $this->db->select('Data_Template_Fields');
 	            $this->db->from('template_fields');
 	            $this->db->join('table', 'table.ID_Table = template_fields.ID_Table');
 	            $this->db->where('ID_Users', $this->session->ID_Users);
-                $this->db->where('Name_Table', $Table);
+                $this->db->where('Name_Table', $this->Tabel);
 				$query = $this->db->get();
 
         		if ($query->num_rows() > 0)
         		{
 					$row = $query->row_array();
-	                $ColumnArray = explode(',', $row['Data_Template_Fields']);
+	                $ColumnArray = explode(', ', $row['Data_Template_Fields']);
 
 					$this->db->select('ID_Fields_Table, Name_Fields_Table, Description_Fields_Table');
 		            $this->db->from('Fields_Table');
 		            $this->db->where_in('ID_Fields_Table', $ColumnArray);
+                    $query = $this->db->get();
 
 					foreach ($query->result_array() as $row)
 					{
@@ -172,6 +189,7 @@ class Selectbd_model extends CI_Model {
 					{						$Out .= $TempArrayFields[$value].', ';
 					}
 
+                    $this->db->reset_query();
 					Return reduce_multiples($Out, ", ", TRUE);
 				}
 			}

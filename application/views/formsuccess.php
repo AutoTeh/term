@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
-<h3>Ваша форма была успешно отправлена!</h3>
+<h1>Р’Р°С€Р° С„РѕСЂРјР° Р±С‹Р»Р° СѓСЃРїРµС€РЅРѕ РѕС‚РїСЂР°РІР»РµРЅР°!</h1>
 
-<p><?=anchor('<?PHP echo $backpage;?>', 'Еще раз!'); ?></p>
+<p><?=anchor($backpage, 'Р•С‰Рµ СЂР°Р·!'); ?></p>

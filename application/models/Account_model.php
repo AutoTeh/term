@@ -30,7 +30,7 @@ class Account_model extends CI_Model {
         'E_Mail_Users' 	=> $this->input->post('E_Mail'),
 		);
 
-        if ($this->input->post('pass')) ? $data['Pass_Users'] = do_hash($this->input->post('pass'));
+        if ($this->input->post('pass'))  $data['Pass_Users'] = do_hash($this->input->post('pass'));
 
         $this->db->where('id', $id);
 		$this->db->update('users', $data);
@@ -38,18 +38,20 @@ class Account_model extends CI_Model {
 
  	public function auth()
  	{
-		$this->db->select('ID_Users, Login, FIO, ID_Group');
+		$this->db->select('ID_Users, Login_Users, FIO_Users, ID_Group');
 		$this->db->from('users');
-		$this->db->where('Login', $this->input->post('login'));
-		$this->db->where('Pass', do_hash($this->input->post('pass')));
+		$this->db->where('Login_Users', $this->input->post('login'));
+		$this->db->where('Pass_Users', do_hash($this->input->post('pass')));
 		$query = $this->db->get();
 
 		if ($query->num_rows() > 0)
 		{
+			$row = $query->row();
+
 			$newdata = array(
 					'ID_Users'  => $row->ID_Users,
-			        'Login'  	=> $row->Login,
-			        'FIO'     	=> $row->FIO,
+			        'Login'  	=> $row->Login_Users,
+			        'FIO'     	=> $row->FIO_Users,
 			        'ID_Group'  => $row->ID_Group,
 			        'logged_in' => TRUE
 			);
@@ -66,12 +68,18 @@ class Account_model extends CI_Model {
 		 {		 	return TRUE;
 		 }
 		 	Else
-		 {		 	redirect('/', 'refresh');		 	return FALSE;
+		 {		 	redirect('/auth', 'refresh');		 	return FALSE;
 	     }
  	}
 
  	public function is_auth_and_group($ID_Group)
  	{
-		return ($this->session->logged_in && $ID_Group == $this->session->ID_Group) ? TRUE : FALSE;
+		if ($ID_Group == $this->session->ID_Group)
+		{			return TRUE;
+		}
+		Else
+		{
+			redirect('/auth', 'refresh');			return FALSE;
+		}
  	}
 }

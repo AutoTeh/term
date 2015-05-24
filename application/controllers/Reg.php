@@ -11,7 +11,21 @@ class Reg extends CI_Controller {
 	public function index()
 	{
 		$data['Title'] = "Регистрация";
-        $data['page'] = 'reg';
+        $data['Page'] = 'reg';
+
+				$this->form_validation->set_rules('login', 'Логин', 'required|min_length[5]|max_length[12]|is_unique[users.Login_Users]');
+				$this->form_validation->set_rules('e_mail', 'E-Mail', 'required|valid_email|is_unique[users.E_Mail_Users]');
+				$this->form_validation->set_rules('pass', 'Пароль', 'required');
+		        $this->form_validation->set_rules('fio', 'ФИО', 'required');
+
+	        if ($this->form_validation->run() == TRUE)
+	        {
+	        	$this->Account->reg();
+	        	$data['backpage'] = 'reg/add';
+	        	$data['Page'] = 'formsuccess';
+
+	        }
+
 		$this->load->view('main', $data);
 	}
 
@@ -19,7 +33,7 @@ class Reg extends CI_Controller {
 	public function add()
 	{
 		$data['Title'] = "Регистрация";
-        $data['page'] = 'reg/add';
+        $data['Page'] = 'reg';
 
 				$this->form_validation->set_rules('login', 'Логин', 'required|min_length[5]|max_length[12]|is_unique[users.Login]');
 				$this->form_validation->set_rules('e_mail', 'E-Mail', 'required|valid_email|is_unique[users.E_Mail_Users]');
@@ -30,7 +44,7 @@ class Reg extends CI_Controller {
 	        {
 	        	$this->Account->reg();
 	        	$data['backpage'] = 'reg/add';
-	        	$data['page'] = 'formsuccess';
+	        	$data['Page'] = 'formsuccess';
 
 	        }
 
@@ -43,7 +57,7 @@ class Reg extends CI_Controller {
 		if ($id = '') redirect('/', 'refresh');
 
 		$data['Title'] = "Регистрация";
-        $data['page'] = 'reg';
+        $data['Page'] = 'reg';
         $data['ID_U'] = $id;
 
 				$this->form_validation->set_rules('Login', 'Логин', 'required');

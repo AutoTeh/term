@@ -22,95 +22,59 @@ class Tct extends CI_Controller {
  	public function __construct()
     {
     	parent::__construct();
-
-    	$this->load->model('selectbd');
-    	$this->load->library('table');
+        $this->Account->is_auth();
+        $this->Selectbd->Tabel = 'TCT';
     }
 
 	public function index()
 	{
-        $cell = array('data' => $this->_gen_tabel($this->selectbd->tct()), 'colspan' => 10);
-	    $this->table->clear();
+		$this->table->set_template(array ( 'table_open'  => '<table id="head" cellspacing="0" >' ));
 
-		$data = array('id' => 'Tabel',
-					  'onkeypress'  => 'Javascript: if (event.keyCode==13) ReceiveTabelFilter("Dogovor");');
+  		$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->tct()),
+					   'js' 			=> 'var tf2 = setFilterGrid("head", table_Props_head);',
+        			   'Page' 			=> 'table',
+        			   'CountColTable' 	=> $this->Gen_table->CountCol-1,
+        			   'Title' 			=> 'TCT',
+        			   'IDTable'        => 'head');
 
-	    $this->table->set_heading('Номер мерчанта'.form_input_new($data, 'INN_Org'),
-	       						  'Название'.form_input_new($data, 'Name_Org'),
-	       						  'Контактное лицо'.form_input_new($data, 'ID_Juristical_Address_Org'),
-	       						  'Телефон'.form_input_new($data, 'ID_Post_Address_Org'),
-		  					      'Адрес'.form_input_new($data, 'FIO_Boss_Org'),
-		   					      'Категория'.form_input_new($data, 'Name_Type_Rank_Org'),
-								  'МСС'.form_input_new($data, 'Phone_Boss_Org'),
-								  'Режим работы'.form_input_new($data, 'E_Mail_Org'),
-								  'Настройки');
-
-		//$this->table->set_heading('Номер мерчанта', 'Название', 'Контактное лицо',
-		//						  'Телефон', 'Адрес', 'Категория', 'МСС', 'Режим работы');
-
-		$this->table->add_row($cell);
-  		$data['table'] = $this->table->generate();
-
-		$this->load->view('main',$data);
+		$this->load->view('main', $data);
 	}
 
 	public function FilterID()
 	{
-
-	  	$this->form_validation->set_rules(array('field' => 'Search',
-		  										'rules' => 'integer',
-		  										'errors' => array('required' => 'Передан не верный ИД.')
-	  				  							));
+  		$this->form_validation->set_rules('search', 'ID', 'required|integer');
+  		$this->form_validation->set_rules('searchfild', 'РџРѕР»СЏ РїРѕРёСЃРєР°', 'required|callback_valid_fild');
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->tct(TRUE)), 'colspan' => 10, 'cellpadding' => '0');
-		    $this->table->clear();
+            $this->Selectbd->SearchFild = $this->input->post('searchfild');
+			$this->Selectbd->Search = $this->input->post('search');
+	    	$ID = 'TCT_'.$this->Selectbd->Search;
 
-			$data = array('id' => 'Tabel',
-						  'onkeypress'  => 'Javascript: if (event.keyCode==13) ReceiveTabelFilter("Dogovor");');
+			$this->table->set_template(array ( 'table_open'  => '<table id="'.$ID.'" cellspacing="0">' ));
 
-	    	$this->table->set_heading('Номер мерчанта'.form_input_new($data, 'Num_Merchant_TCT'),
-	       							  'Название'.form_input_new($data, 'Name_TCT'),
-	       							  'Контактное лицо'.form_input_new($data, 'Contact_Name_TCT'),
-	       							  'Телефон'.form_input_new($data, 'Phone_TCT'),
-		  						      'Адрес'.form_input_new($data, 'ID_Address_TCT'),
-		   					    	  'Категория'.form_input_new($data, 'Name_Type_Kategoria_TCT'),
-									  'МСС'.form_input_new($data, 'Name_Type_MCC_TCT'),
-									  'Режим работы'.form_input_new($data, 'Mode_TCT'),
-									  'Настройки');
+			$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->tct(TRUE)),
+						   'CountColTable' 	=> $this->Gen_table->CountCol-1,
+						   'IDTable'        => $ID,
+						   'js' 			=> '');
 
-			$this->table->add_row($cell);
-	  		$data['table'] = $this->table->generate();
-        } Else: Echo validation_errors();
+  			$this->load->view('table', $data);
+
+        } Else {
+        	$this->load->view('err');
+        }
 	}
 
-	public function Filter()
+	function valid_fild($value)
 	{
-		Echo $this->_gen_tabel($this->selectbd->tct(FALSE));
+		if ($this->db->field_exists($value, $this->Selectbd->Tabel))
+		{
+			$this->form_validation->set_message('valid_fild', 'РџРµСЂРµРґР°РЅРѕ РЅРµ РІРµСЂРЅРѕРµ РёРјСЏ {field}.');
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
 	}
-
-	function _gen_tabel($query)
-	{
-        	if ($query->num_rows() > 0)
-        	{
-				foreach ($query->result() as $row)
-				{
-						$TempArray = Array( $row['Num_Merchant_TCT'],
-						       			    $row['Name_TCT'],
-						       			    $row['Contact_Name_TCT'],
-						       				$row['Phone_TCT'],
-						       				$row['ID_Address_TCT'],
-						       				$row['Name_Type_Kategoria_TCT'],
-						       				$row['Name_Type_MCC_TCT'],
-						       				$row['Mode_TCT']
-					    );
-
-						$this->table->add_row($TempArray);
-				}
-		        	 Return $this->table->generate();
-            } Else : Return 'Нет данных';
-	}
-
-
 }

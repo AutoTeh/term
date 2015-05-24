@@ -22,71 +22,59 @@ class Terminal extends CI_Controller {
  	public function __construct()
     {
     	parent::__construct();
-
-    	$this->load->model('selectbd');
-    	$this->load->library('table');
+        $this->Account->is_auth();
+        $this->Selectbd->Tabel = 'Terminal';
     }
 
 	public function index()
 	{
-        $cell = array('data' => $this->_gen_tabel($this->selectbd->terminal()), 'colspan' => 10);
-	    $this->table->clear();
+		$this->table->set_template(array ( 'table_open'  => '<table id="head" cellspacing="0" >' ));
 
-		$this->table->set_heading('ИНН', 'Название организации', 'Юр. адрес', 'Почтовый адрес',
-								  'ФИО руководителя', 'Телефон руководителя', 'E-mail', 'ОКПО', 'ОГРН'
-								  'Название банка');
+  		$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->terminal()),
+					   'js' 			=> 'var tf2 = setFilterGrid("head", table_Props_head);',
+        			   'Page' 			=> 'table',
+        			   'CountColTable' 	=> $this->Gen_table->CountCol-1,
+        			   'Title' 			=> '',
+        			   'IDTable'        => 'head');
 
-		$this->table->add_row($cell);
-  		$data['table'] = $this->table->generate();
-
-		$this->load->view('main',$data);
+		$this->load->view('main', $data);
 	}
 
 	public function FilterID()
 	{
-
-	  	$this->form_validation->set_rules(array('field' => 'Search',
-		  										'rules' => 'integer',
-		  										'errors' => array('required' => 'Передан не верный ИД.')
-	  				  							));
+  		$this->form_validation->set_rules('search', 'ID', 'required|integer');
+  		$this->form_validation->set_rules('searchfild', 'РџРѕР»СЏ РїРѕРёСЃРєР°', 'required|callback_valid_fild');
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
-	        $cell = array('data' => $this->_gen_tabel($this->selectbd->terminal(TRUE)), 'colspan' => 10, 'cellpadding' => '0');
-		    $this->table->clear();
+            $this->Selectbd->SearchFild = $this->input->post('searchfild');
+			$this->Selectbd->Search = $this->input->post('search');
+	    	$ID = 'Terminal_'.$this->Selectbd->Search;
 
-		$this->table->set_heading('Модель', 'Сирийный номер',
-								  'Инвентарный номер', 'Цена',
-								  'Дата получения');
+			$this->table->set_template(array ( 'table_open'  => '<table id="'.$ID.'" cellspacing="0">' ));
 
-			$this->table->add_row($cell);
-	  		$data['table'] = $this->table->generate();
-        } Else: Echo validation_errors();
+			$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->terminal(TRUE)),
+						   'CountColTable' 	=> $this->Gen_table->CountCol-1,
+						   'IDTable'        => $ID,
+						   'js' 			=> '');
+
+  			$this->load->view('table', $data);
+
+        } Else {
+        	$this->load->view('err');
+        }
 	}
 
-	public function Filter()
+	function valid_fild($value)
 	{
-		Echo $this->_gen_tabel($this->selectbd->terminal(FALSE));
+		if ($this->db->field_exists($value, $this->Selectbd->Tabel))
+		{
+			$this->form_validation->set_message('valid_fild', 'РџРµСЂРµРґР°РЅРѕ РЅРµ РІРµСЂРЅРѕРµ РёРјСЏ {field}.');
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
 	}
-
-	function _gen_tabel($query)
-	{
-        	if ($query->num_rows() > 0)
-        	{
-				foreach ($query->result() as $row)
-				{
-						$TempArray = Array( $row['Name_Type_Terminal'],
-						       			    $row['SN_Num_Terminal'],
-						       			    $row['Inv_Num_Terminal'],
-						       				$row['Price_Terminal'],
-						       				$row['Date_Terminal']
-					    );
-
-						$this->table->add_row($TempArray);
-				}
-		        	 Return $this->table->generate();
-            } Else : Return 'Нет данных';
-	}
-
-
 }

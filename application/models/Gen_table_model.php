@@ -2,7 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Gen_table_model extends CI_Model {
-    public $TableArray = array();
+    var $TableArray = array();
+    var $Tabel;
     public $CountCol;
 
 	public function __construct()
@@ -11,35 +12,39 @@ class Gen_table_model extends CI_Model {
 		parent::__construct();
 	}
 
-	public function Out($query, $Tabel = '',$FlagFilterID = FALSE)
+	public function Out($query)
 	{
-        	if ($query->num_rows() > 0 && !$Tabel == '')
+			$this->Tabel = $this->Selectbd->Tabel;
+			if ($query->num_rows() > 0 && !$this->Tabel == '')
         	{                $this->_gen_head($query);
                 $this->_get_inf();
+                $this->CountCol = $query->num_fields();
 
-        		if (!$FlagFilterID) { $this->$CountCol = $query->num_fields(); $this->table->add_row(array('data' => '', 'colspan' => $this->$CountCol));}
+        		 $this->table->add_row(array('data' => '', 'colspan' => $this->CountCol));
 
 				foreach ($query->result_array() as $row)
 				{
 					foreach ($row as $key => $value)
 					{
 
-                    	switch (substr($key, 0, 2)) {
-						    case 'ID':
-						        $TempArray[] = $this->_gen_button($value, ($FlagFilterID) ? 'disabled' : '', $Tabel, $key);
+                    	switch ($key) {
+						    case 'ID_'.$this->Tabel:
+						        $TempArray[] = $this->_gen_button($value);
 						        $ID_Table = $value;
 						        break;
 						    default:
 						        $TempArray[] = $value;
 						}
+
 					}
 
 						$this->table->add_row($TempArray);
-						if (!$FlagFilterID) $this->table->add_row(array('data' => '<div id="FilterTabel" class="dogovor_'.$ID_Table.'"></div>', 'colspan' => $this->$CountCol));
+						$TempArray = '';
+						$this->table->add_row(array('data' => '<div id="FilterTabel" class="'.$this->Tabel.'_'.$ID_Table.'"></div>', 'colspan' => $this->CountCol));
 
 				}
 		        	 Return $this->table->generate();
-            } Else   Return 'Нет данных';
+            } Else   Return 'РќРµС‚ РґР°РЅРЅС‹С…';
 	}
 
 	function _gen_head($query = '')
@@ -54,13 +59,18 @@ class Gen_table_model extends CI_Model {
 		}
 	}
 
-	function _gen_button($id, $DisableFlag = '', $Table = '', $ID_Field = '')
+	function _gen_button($id)
 	{
-		$Out = '<div class="btn-group"><a class="btn btn-primary btn-mini" href="#"><i class="icon-info-sign icon-white"></i></a><a class="btn btn-primary btn-mini dropdown-toggle '.$DisableFlag.'" data-toggle="dropdown" href="#"><span class="caret"></span></a><ul class="dropdown-menu">';
+
+		$Out = '<div class="btn-group"><a class="btn btn-primary btn-mini" href="#"><i class="icon-info-sign icon-white"></i></a><a class="btn btn-primary btn-mini dropdown-toggle " data-toggle="dropdown" href="#"><span class="caret"></span></a><ul class="dropdown-menu">';
+
 
 		foreach ($this->TableArray as $key => $row)
 		{
-			if (!$Table == $key) $Out .= '<li><a href="#" onclick="'."ReceiveTabelFilterID(".$id.", '".$key."', '".$Table."', '".$ID_Field."');return false".'">'.$row.'</a></li>';
+			if ($key != $this->Tabel)
+			{
+				$Out .= '<li><a href="#" onclick="'."ReceiveTabelFilterID(".$id.", '".$key."', '".$this->Tabel."', 'ID_".$this->Tabel."');return false".'">'.$row.'</a></li>';
+			}
 		}
 
 		return $Out."</ul></div>";
@@ -74,7 +84,7 @@ class Gen_table_model extends CI_Model {
         if ($query->num_rows() > 0)
         {
 			foreach ($query->result_array() as $row)
-			{				$this->TableArray[$row['title']] = $row['Description_Table'];
+			{				$this->TableArray[$row['Name_Table']] = $row['Description_Table'];
 			}
 		}
 	}

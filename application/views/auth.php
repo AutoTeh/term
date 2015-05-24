@@ -1,22 +1,24 @@
 <?PHP
 defined('BASEPATH') OR exit('No direct script access allowed');
+echo form_open('auth', array('class' => 'form-horizontal'));
 ?>
-<form method="post" action="../auth" class="form-horizontal">
   <div class="control-group">
-    <label class="control-label" for="login">Логин</label>
+    <label class="control-label" for="login">Р›РѕРіРёРЅ</label>
     <div class="controls">
-      <input type="text" id="login" placeholder="Логин">
+      <input type="text" name="login" placeholder="Р›РѕРіРёРЅ">
+      <?php echo form_error('login'); ?></br>
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="pass">Пароль</label>
+    <label class="control-label" for="pass">РџР°СЂРѕР»СЊ</label>
     <div class="controls">
-      <input type="password" id="pass" placeholder="Пароль">
+      <input type="password" name="pass" placeholder="РџР°СЂРѕР»СЊ">
+      <?php echo form_error('pass'); ?></br>
     </div>
   </div>
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn">Войти</button>
+      <button type="submit" class="btn">Р’РѕР№С‚Рё</button>
     </div>
   </div>
 </form>
