@@ -53,7 +53,7 @@ echo form_open('reg', array('class' => 'form-horizontal'));
   </div>
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn">Зарегистрироваться</button>
+      <button type="submit" class="btn">далее</button>
     </div>
   </div>
 </form>

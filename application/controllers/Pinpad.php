@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Tid extends CI_Controller {
+class Pinpad extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -23,18 +23,18 @@ class Tid extends CI_Controller {
     {
     	parent::__construct();
         $this->Account->is_auth();
-        $this->Selectbd->Tabel = 'TID';
+        $this->Selectbd->Tabel = 'PinPad';
     }
 
 	public function index()
 	{
 		$this->table->set_template(array ( 'table_open'  => '<table id="head" cellspacing="0" >' ));
 
-  		$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->tid()),
+  		$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->pinpad()),
 					   'js' 			=> 'var tf2 = setFilterGrid("head", table_Props_head);',
         			   'Page' 			=> 'table',
         			   'CountColTable' 	=> $this->Gen_table->CountCol-1,
-        			   'Title' 			=> 'Договоры',
+        			   'Title' 			=> '',
         			   'IDTable'        => 'head');
 
 		$this->load->view('main', $data);
@@ -49,11 +49,11 @@ class Tid extends CI_Controller {
 	    {
             $this->Selectbd->SearchFild = $this->input->post('searchfild');
 			$this->Selectbd->Search = $this->input->post('search');
-	    	$ID = 'TID_'.$this->Selectbd->Search;
+	    	$ID = 'PinPad_'.$this->Selectbd->Search;
 
 			$this->table->set_template(array('table_open'  => '<table id="'.$ID.'" cellspacing="0">'));
 
-			$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->tid(TRUE)),
+			$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->pinpad(TRUE)),
 						   'CountColTable' 	=> $this->Gen_table->CountCol-1,
 						   'IDTable'        => $ID,
 						   'js' 			=> '');

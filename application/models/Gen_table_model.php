@@ -62,7 +62,7 @@ class Gen_table_model extends CI_Model {
 	function _gen_button($id)
 	{
 
-		$Out = '<div class="btn-group"><a class="btn btn-primary btn-mini" href="#"><i class="icon-info-sign icon-white"></i></a><a class="btn btn-primary btn-mini dropdown-toggle " data-toggle="dropdown" href="#"><span class="caret"></span></a><ul class="dropdown-menu">';
+		$Out = '<div class="btn-group "><a class="btn btn-primary btn-mini" href="#"><i class="icon-info-sign icon-white"></i></a><a class="btn btn-primary btn-mini dropdown-toggle " data-toggle="dropdown" href="#"><span class="caret "></span></a><ul class="dropdown-menu pull-right">';
 
 
 		foreach ($this->TableArray as $key => $row)
@@ -72,8 +72,18 @@ class Gen_table_model extends CI_Model {
 				$Out .= '<li><a href="#" onclick="'."ReceiveTabelFilterID(".$id.", '".$key."', '".$this->Tabel."', 'ID_".$this->Tabel."');return false".'">'.$row.'</a></li>';
 			}
 		}
+          $Out .= '<li class="dropdown-submenu pull-left"><a tabindex="-1" href="#">привязка</a><ul class="dropdown-menu">';
 
-		return $Out."</ul></div>";
+          switch ($this->Tabel) {
+			  case 'Dogovor':
+				  $Out .= '<li><a href="#"> Организация</a></li>';
+				  break;
+			  case 'Org':
+				  $Out .= '<li><a href="#"> Договор</a></li> <li><a href="#"> ТСТ</a></li>';
+				  break;
+		  }
+
+		return $Out."</ul></ul></div>";
 	}
 
 	function _get_inf()

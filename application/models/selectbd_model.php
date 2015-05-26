@@ -25,7 +25,7 @@ class Selectbd_model extends CI_Model {
 	                $this->db->join('Terminal', 'Terminal.ID_Terminal = TID.ID_Terminal', 'left');
 	                $this->db->join('Pinpad', 'Pinpad.ID_Pinpad = TID.ID_Pinpad', 'left');
 	                $this->db->join('Sim', 'Sim.ID_Sim = TID.ID_Sim', 'left');
-	                $this->db->where(strtr($this->SearchFild, "ID_", "   ").'.'.$this->SearchFild,$this->Search);
+	                $this->db->where(str_replace("ID_", "", $this->SearchFild).'.'.$this->SearchFild,$this->Search);
 
 	                $query = $this->db->get();
 
@@ -57,51 +57,11 @@ class Selectbd_model extends CI_Model {
         	return $this->_querying($WhereOrIN);
         }
 
-        public function address_out($Search = '', $CityTRUE = FALSE)
-        {
-        		$Out = TRUE;
-
-        		$this->db->select('contact(SHORTNAME, " ", OFFNAME) as name, aoguid, parentaoguid');
-	        	$this->db->from('addrobj');
-	            $this->db->where('aoid', $Search);
-	            $query = $this->db->get();
-
-	          	if ($query->num_rows() > 0)
-				{
-					        $row = $query->row();
-					        $OutString = ($CityTRUE) ? '' : $row->name;
-					        ($row->parentaoguid == '') ? $Out = FALSE : $Search = $row->parentaoguid;
-
-                while ($Out) {
-
-	        		$this->db->select('contact(SHORTNAME, '. ', OFFNAME) as name, aoguid, parentaoguid');
-	        		$this->db->from('addrobj');
-	                $this->db->where('aoguid', $Search);
-	                $this->db->where('currstatus', 0);
-	                if ($CityTRUE) { $this->db->where('AOLEVEL', 4);}
-
-	                $query = $this->db->get();
-
-	          		if ($query->num_rows() > 0)
-					{
-					        $row = $query->row();
-					        $OutString = $row->name.$OutString.' ';
-					        ($row->parentaoguid == '') ? $Out = FALSE : $Search = $row->parentaoguid;
-					        $Out = ($CityTRUE) ? FALSE : TRUE;
-					}
-                }
-
-                	return TRIM($OutString);
-                }
-
-                	return FALSE;
-        }
-
     	public function tct($WhereOrIN = FALSE)
         {
         	$this->join = array(
-        		  		  array('Type_Kategoria_TCT', 'Type_Kategoria_TCT.ID_Type_Kategoria_TCT = TCT.ID_Type_Kategoria_TCT', 'inner'),
-            	  		  array('Type_MCC_TCT', 'Type_MCC_TCT.ID_Type_MCC_TCT = TCT.ID_Type_MCC_TCT', 'inner'));
+        		  		  array('Type_Kategoria_TCT', 'Type_Kategoria_TCT.ID_Type_Kategoria_TCT = TCT.ID_Type_Kategoria_TCT', 'left'),
+            	  		  array('Type_MCC_TCT', 'Type_MCC_TCT.ID_Type_MCC_TCT = TCT.ID_Type_MCC_TCT', 'left'));
 
             $this->Tabel = 'TCT';
          	return $this->_querying($WhereOrIN);
@@ -115,7 +75,7 @@ class Selectbd_model extends CI_Model {
 
         public function terminal($WhereOrIN = FALSE)
         {
-			$this->join = array(array('Type_Terminal', 'Type_Terminal.Id_Type_Terminal = Terminal.Id_Type_Terminal', 'inner'));
+			$this->join = array(array('Type_Terminal', 'Type_Terminal.Id_Type_Terminal = Terminal.Id_Type_Terminal', 'left'));
 
             $this->Tabel = 'Terminal';
    			return $this->_querying($WhereOrIN);
@@ -123,7 +83,7 @@ class Selectbd_model extends CI_Model {
 
         public function pinpad($WhereOrIN = FALSE)
         {
-			$this->join = array(array('Type_PinPad', 'Type_PinPad.ID_Type_PinPad = PinPad.ID_Type_PinPad', 'inner'));
+			$this->join = array(array('Type_PinPad', 'Type_PinPad.ID_Type_PinPad = PinPad.ID_Type_PinPad', 'left'));
 
             $this->Tabel = 'PinPad';
    			return $this->_querying($WhereOrIN);
@@ -131,7 +91,7 @@ class Selectbd_model extends CI_Model {
 
         public function sim($WhereOrIN = FALSE)
         {
-        	$this->join = array(array('Type_Operator_SIM', 'Type_Operator_SIM.ID_Type_Operator_SIM = SIM.ID_Type_Operator_SIM', 'nner'));
+        	$this->join = array(array('Type_Operator_SIM', 'Type_Operator_SIM.ID_Type_Operator_SIM = SIM.ID_Type_Operator_SIM', 'left'));
 
             $this->Tabel = 'SIM';
          	return $this->_querying($WhereOrIN);
@@ -145,13 +105,13 @@ class Selectbd_model extends CI_Model {
                     $this->db->where_in($this->Tabel.'.ID_'.$this->Tabel, $this->search_ID($this->Tabel, 'ID_'.$this->Tabel));
            		}
 
-           		$this->db->select($Head);
+           		$this->db->select($Head, FALSE);
         		$this->db->from($this->Tabel);
 
 				foreach ($this->join as $row)
 				{					$this->db->join($row[0], $row[1], $row[2]);
 				}
-                $this->db->limit(1);
+
 	            return $this->db->get();
         }
 

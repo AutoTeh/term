@@ -49,9 +49,9 @@ class Org extends CI_Controller {
 	    {
      		$this->Selectbd->SearchFild = $this->input->post('searchfild');
 			$this->Selectbd->Search = $this->input->post('search');
-			$ID = 'Org_'.$this->input->post('Search');
+			$ID = 'Org_'.$this->Selectbd->Search;
 
-			$this->table->set_template(array('table_open'  => '<table id="'.$ID.'" cellspacing="0" >'));
+			$this->table->set_template(array('table_open'  => '<table id="'.$ID.'" cellspacing="0">'));
 
 			$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->org(TRUE)),
 						   'CountColTable' 	=> $this->Gen_table->CountCol-1,
@@ -67,7 +67,7 @@ class Org extends CI_Controller {
 
 	function valid_fild($value)
 	{
-		if ($this->db->field_exists($value, $this->Selectbd->Tabel))
+		if (!$this->db->field_exists($value, str_replace("ID_", "", $value)))
 		{
 			$this->form_validation->set_message('valid_fild', 'Передано не верное имя {field}.');
 			return FALSE;

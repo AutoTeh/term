@@ -53,7 +53,7 @@ class Dogovor extends CI_Controller {
 			$this->Selectbd->Search = $this->input->post('search');
 	    	$ID = 'Dogovor_'.$this->Selectbd->Search;
 
-			$this->table->set_template(array ( 'table_open'  => '<table id="'.$ID.'" cellspacing="0">' ));
+			$this->table->set_template(array('table_open'  => '<table id="'.$ID.'" cellspacing="0">'));
 
 			$data = array ('Table' 			=> $this->Gen_table->Out($this->Selectbd->dogovor(TRUE)),
 						   'CountColTable' 	=> $this->Gen_table->CountCol-1,
@@ -63,13 +63,13 @@ class Dogovor extends CI_Controller {
   			$this->load->view('table', $data);
 
         } Else {
-               	$this->load->view('err');
+        	$this->load->view('err');
         }
 	}
 
  	function valid_fild($value)
 	{
-		if ($this->db->field_exists($value, $this->Selectbd->Tabel))
+		if (!$this->db->field_exists($value, str_replace("ID_", "", $value)))
 		{
 			$this->form_validation->set_message('valid_fild', 'Передано не верное имя {field}.');
 			return FALSE;
