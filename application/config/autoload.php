@@ -137,4 +137,4 @@ $autoload['language'] = array();
 |	$autoload['model'] = array('first_model' => 'first');
 */
 
-$autoload['model'] = array('Account_model' => 'Account', 'Address_model' => 'Address', 'Selectbd_model' => 'Selectbd', 'Gen_table_model' => 'Gen_table' );
+$autoload['model'] = array('Add_edit_model' => 'Add_edit', 'Account_model' => 'Account', 'Address_model' => 'Address', 'Selectbd_model' => 'Selectbd', 'Gen_table_model' => 'Gen_table' );

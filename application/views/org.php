@@ -52,6 +52,34 @@ echo form_open('reg', array('class' => 'form-horizontal'));
     </div>
   </div>
   <div class="control-group">
+    <label class="control-label" for="Juristical_Address_Org">Юридический адрес</label>
+    <div class="controls">
+      <input type="text" name="Juristical_Address_Org" value="<?php echo set_value('Juristical_Address_Org'); ?>" >
+      <?php echo form_error('Juristical_Address_Org'); ?>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="Home_Juristical_Address_Org">Юридический адрес(дом)</label>
+    <div class="controls">
+      <input type="text" name="Home_Juristical_Address_Org" value="<?php echo set_value('Home_Juristical_Address_Org'); ?>" >
+      <?php echo form_error('Home_Juristical_Address_Org'); ?>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="Post_Address_Org">Почтовый адрес</label>
+    <div class="controls">
+      <input type="text" name="Post_Address_Org" value="<?php echo set_value('Post_Address_Org'); ?>" >
+      <?php echo form_error('Post_Address_Org'); ?>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="Home_Post_Address_Org">Почтовый адрес(дом)</label>
+    <div class="controls">
+      <input type="text" name="Home_Post_Address_Org" value="<?php echo set_value('Home_Post_Address_Org'); ?>" >
+      <?php echo form_error('Home_Post_Address_Org'); ?>
+    </div>
+  </div>
+  <div class="control-group">
     <div class="controls">
       <button type="submit" class="btn">далее</button>
     </div>

@@ -40,7 +40,7 @@ class Gen_table_model extends CI_Model {
 
 						$this->table->add_row($TempArray);
 						$TempArray = '';
-						$this->table->add_row(array('data' => '<div id="FilterTabel" class="'.$this->Tabel.'_'.$ID_Table.'"></div>', 'colspan' => $this->CountCol));
+						$this->table->add_row(array('data' => '<center><div id="FilterTabel" class="'.$this->Tabel.'_'.$ID_Table.'"></div></center>', 'colspan' => $this->CountCol));
 
 				}
 		        	 Return $this->table->generate();

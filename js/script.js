@@ -13,97 +13,31 @@
 		});
 	}
 
-	function editselect(response, num){            if (response != ""){            	resp_obj = JSON.parse(response);				if(typeof resp_obj.area != 'undefined') {$('.controls_area').html(resp_obj.area);}
-				if(typeof resp_obj.city != 'undefined') {$('.controls_city').html(resp_obj.city);}
-				if(typeof resp_obj.city_area != 'undefined') {$('.controls_city_area').html(resp_obj.city_area);}
-				if(typeof resp_obj.locality != 'undefined') {$('.controls_locality').html(resp_obj.locality);}
-				if(typeof resp_obj.street != 'undefined') {$('.controls_street').html(resp_obj.street);}
-				if(typeof resp_obj.add_area != 'undefined') {$('.controls_add_area').html(resp_obj.add_area);}
-				if(typeof resp_obj.street_add_area != 'undefined') {$('.controls_street_add_area').html(resp_obj.street_add_area);}
-			} else {			var arr = [ "area", "city", "city_area", "locality", "street", "add_area", "street_add_area" ];
-			for(var i = num; i<arr.length; i++) {
-					$('.controls_' + arr[i]).html('<select name=""><option value=""></option></select>');
-			}
+	function editselect(response, Name){            if (response != ""){            	resp_obj = JSON.parse(response);				if(typeof resp_obj.area != 'undefined') {$('.controls_' + Name + '_area').html(resp_obj.area);}
+				if(typeof resp_obj.city != 'undefined') {$('.controls_' + Name + '_city').html(resp_obj.city);}
+				if(typeof resp_obj.city_area != 'undefined') {$('.controls_' + Name + '_city_area').html(resp_obj.city_area);}
+				if(typeof resp_obj.locality != 'undefined') {$('.controls_' + Name + '_locality').html(resp_obj.locality);}
+				if(typeof resp_obj.street != 'undefined') {$('.controls_' + Name + '_street').html(resp_obj.street);}
+				if(typeof resp_obj.add_area != 'undefined') {$('.controls_' + Name + '_add_area').html(resp_obj.add_area);}
+				if(typeof resp_obj.street_add_area != 'undefined') {$('.controls_' + Name + '_street_add_area').html(resp_obj.street_add_area);}
+			} else {				var flag = false;
+				var myArray = [ "region", "area", "city", "city_area", "locality", "street", "add_area", "street_add_area" ];
+				for(var i = 0; i < myArray.length; i++)
+				{
+					 if (flag == true) $('.controls_' + Name + '_' + myArray[i]).html('<select name=""><option value=""></option></select>');					 if (myArray[i] ==	'region') flag = true;
+				}
 			}
 	}
 
-	function submitformRegion(ID){		$.ajax({
-		    url: '/zub123/address/region',
+	function get_address(ID, Page, Name){
+		$.ajax({
+		    url: '/zub123/address/' + Page,
 		    type: "post",
-		    data: {'search': ID},
+		    data: {'search': ID,
+		    	   'NameField': Name},
 		    dataType: "html",
-		    success: function(response){		    	editselect(response, 0);
+		    success: function(response){
+		    	editselect(response, Name);
 		    }
-		});
-	}
-
-	function submitformarea(ID){
-		$.ajax({
-		    url: '/zub123/address/area',
-		    type: "post",
-		    data: {search: ID},
-		    success: function(response){			editselect(response, 1);
-		    },
-		    dataType: "html"
-		});
-	}
-
-	function submitformcity(ID){
-		$.ajax({
-		    url: '/zub123/address/city',
-		    type: "post",
-		    data: {search: ID},
-		    success: function(response){
-			editselect(response, 2);
-		    },
-		    dataType: "html"
-		});
-	}
-
-	function submitformcity_area(ID){
-		$.ajax({
-		    url: '/zub123/address/city_area',
-		    type: "post",
-		    data: {search: ID},
-		    success: function(response){
-			editselect(response, 3);
-		    },
-		    dataType: "html"
-		});
-	}
-
-	function submitformlocality(ID){
-		$.ajax({
-		    url: '/zub123/address/locality',
-		    type: "post",
-		    data: {search: ID},
-		    success: function(response){
-			editselect(response, 4);
-		    },
-		    dataType: "html"
-		});
-	}
-
-	function submitformstreet(ID){
-		$.ajax({
-		    url: '/zub123/address/street',
-		    type: "post",
-		    data: {search: ID},
-		    success: function(response){
-		    editselect(response, 5);
-		    },
-		    dataType: "html"
-		});
-	}
-
-	function submitformadd_area(ID){
-		$.ajax({
-		    url: '/zub123/address/add_area',
-		    type: "post",
-		    data: {search: ID},
-		    success: function(response){
-			editselect(response, 6);
-		    },
-		    dataType: "html"
 		});
 	}

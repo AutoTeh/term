@@ -34,7 +34,7 @@ class Tid extends CI_Controller {
 					   'js' 			=> 'var tf2 = setFilterGrid("head", table_Props_head);',
         			   'Page' 			=> 'table',
         			   'CountColTable' 	=> $this->Gen_table->CountCol-1,
-        			   'Title' 			=> '��������',
+        			   'Title' 			=> 'TID',
         			   'IDTable'        => 'head');
 
 		$this->load->view('main', $data);
@@ -43,7 +43,7 @@ class Tid extends CI_Controller {
 	public function FilterID()
 	{
   		$this->form_validation->set_rules('search', 'ID', 'required|integer');
-  		$this->form_validation->set_rules('searchfild', '���� ������', 'required|callback_valid_fild');
+  		$this->form_validation->set_rules('searchfild', 'Поля поиска', 'required|callback_valid_fild');
 
 	    if ($this->form_validation->run() == TRUE)
 	    {
@@ -65,11 +65,92 @@ class Tid extends CI_Controller {
         }
 	}
 
+	public function add()
+	{
+	  	$this->form_validation->set_rules('Num_TID', 'TID', 'required');
+	  	$this->form_validation->set_rules('Kod_TID', 'Код активации', 'required');
+	  	$this->form_validation->set_rules('Date_Reg_CA_TID', 'Дата регистрации ЦА', 'required');
+
+	    if ($this->form_validation->run() == TRUE)
+	    {
+
+  			$data = array (	'Page' 	=> 'formsuccess',
+  							'backpage' 	=> 'tid/add',
+	        			   	'Title'  => 'TID успешно добавлен');
+            $this->Add_edit->addtid();
+
+  			$this->load->view('main', $data);
+
+        } Else {
+            $this->form_validation->set_error_delimiters('<span class="label label-important">', '</span>');
+        	$data = array (	'Page' 		=> 'tidadd',
+        					'UrlPage' 	=> 'tid/add',
+	        			   	'Title'  	=> 'TID.');
+
+        	$this->load->view('main', $data);
+        }
+	}
+
+	public function Edit($id = '', $FlagNext = FALSE)
+	{
+	    if ($this->form_validation->integer($id))
+	    {
+     		$this->db->select('Num_TID, Kod_TID, Date_Reg_CA_TID');
+        	$this->db->from('tid');
+        	$this->db->where('ID_TID', $id);
+        	$query = $this->db->get();
+
+        	if ($query->num_rows() > 0)
+        	{
+				$data = $query->row_array();
+
+			} else {
+				redirect('/', 'refresh');
+			}
+
+            if (!$FlagNext)
+            {
+				$data['Page'] = 'tidedit';
+				$data['UrlPage'] = 'tid/edit/'.$id.'/1';
+		       	$data['Title'] = 'Изменение TID';
+	        	$this->load->view('main', $data);
+            }
+            else
+            {
+	  		$this->form_validation->set_rules('Num_TID', 'TID', 'required');
+	  		$this->form_validation->set_rules('Kod_TID', 'Код активации', 'required');
+	  		$this->form_validation->set_rules('Date_Reg_CA_TID', 'Дата регистрации ЦА', 'required');
+
+		    if ($this->form_validation->run() == TRUE)
+		    {
+
+	  			$data = array (	'Page' 		=> 'formsuccess',
+	  							'backpage' 	=> 'tid/edit/'.$id,
+		        			   	'Title'  	=> 'TID успешно изменен');
+	            $this->Add_edit->edittid($id);
+
+	  			$this->load->view('main', $data);
+	        } else {
+                $this->form_validation->set_error_delimiters('<span class="label label-important">', '</span>');
+
+				$data['Page'] = 'tidadd';
+				$data['UrlPage'] = 'tid/edit/'.$id.'/1';
+		       	$data['Title'] = 'Изменение TID';
+
+	        	$this->load->view('main', $data);
+	        }
+            }
+
+        } Else {
+        	redirect('/', 'refresh');
+        }
+	}
+
 	function valid_fild($value)
 	{
 		if (!$this->db->field_exists($value, str_replace("ID_", "", $value)))
 		{
-			$this->form_validation->set_message('valid_fild', '�������� �� ������ ��� {field}.');
+			$this->form_validation->set_message('valid_fild', 'Передано не верное имя {field}.');
 			return FALSE;
 		}
 		else

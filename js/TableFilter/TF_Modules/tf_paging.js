@@ -17,7 +17,7 @@ TF.prototype.SetPaging = function()
 	var f = this.fObj;
 	this.pagingTgtId =			f.paging_target_id!=undefined //id of container element
 									? f.paging_target_id : null;
-	this.pagingLength =			f.paging_length!=undefined ? f.paging_length * 2 : 10 ; //defines table paging length
+	this.pagingLength =			f.paging_length!=undefined ? f.paging_length * 2 : 10; //defines table paging length
 	this.resultsPerPageTgtId =	f.results_per_page_target_id!=undefined //id of container element
 									? f.results_per_page_target_id : null;
 	this.pgSlcCssClass =		f.paging_slc_css_class!=undefined

@@ -34,7 +34,7 @@ class Terminal extends CI_Controller {
 					   'js' 			=> 'var tf2 = setFilterGrid("head", table_Props_head);',
         			   'Page' 			=> 'table',
         			   'CountColTable' 	=> $this->Gen_table->CountCol-1,
-        			   'Title' 			=> '',
+        			   'Title' 			=> 'Терминалы',
         			   'IDTable'        => 'head');
 
 		$this->load->view('main', $data);
@@ -65,6 +65,94 @@ class Terminal extends CI_Controller {
         }
 	}
 
+	public function add()
+	{
+	  	$this->form_validation->set_rules('ID_Type_Terminal', 'Номер договора', 'required');
+	  	$this->form_validation->set_rules('SN_Num_Terminal', 'Дата договора', 'required');
+	  	$this->form_validation->set_rules('Inv_Num_Terminal', 'Дисконт', 'required');
+	  	$this->form_validation->set_rules('Price_Terminal', 'Дата дисконта', 'required');
+	  	$this->form_validation->set_rules('Date_Terminal', 'Международные карты', 'required');
+
+	    if ($this->form_validation->run() == TRUE)
+	    {
+
+  			$data = array (	'Page' 	=> 'formsuccess',
+  							'backpage' 	=> 'terminal/add',
+	        			   	'Title'  => 'Терминал успешно добавлен');
+            $this->Add_edit->addterminal();
+
+  			$this->load->view('main', $data);
+
+        } Else {
+            $this->form_validation->set_error_delimiters('<span class="label label-important">', '</span>');
+        	$data = array (	'Page' 				=> 'terminaladd',
+        					'UrlPage' 			=> 'terminal/add',
+        					'ID_Type_Terminal' 	=>  form_dropdown('ID_Type_Terminal', $this->db_out_array('ID_Type_Terminal as ID, Name_Type_Terminal as Name', 'type_terminal'), set_value('ID_Type_Terminal')),
+	        			   	'Title'  			=> 'Добавление нового терминала.');
+
+        	$this->load->view('main', $data);
+        }
+	}
+
+	public function Edit($id = '', $FlagNext = FALSE)
+	{
+	    if ($this->form_validation->integer($id))
+	    {
+     		$this->db->select('ID_Type_Terminal, SN_Num_Terminal, Inv_Num_Terminal,
+            				   Price_Terminal, Date_Terminal');
+        	$this->db->from('terminal');
+        	$this->db->where('ID_Terminal', $id);
+        	$query = $this->db->get();
+
+        	if ($query->num_rows() > 0)
+        	{
+				$data = $query->row_array();
+
+			} else {
+				redirect('/', 'refresh');
+			}
+
+            if (!$FlagNext)
+            {
+				$data['Page'] = 'terminaledit';
+				$data['UrlPage'] = 'terminal/edit/'.$id.'/1';
+		       	$data['Title'] = 'Изменение Терминала';
+		       	$data['ID_Type_Terminal'] = form_dropdown('ID_Type_Terminal', $this->db_out_array('ID_Type_Terminal as ID, Name_Type_Terminal as Name', 'type_terminal'), $data['ID_Type_Terminal']);
+	        	$this->load->view('main', $data);
+            }
+            else
+            {
+	  		$this->form_validation->set_rules('ID_Type_Terminal', 'Номер договора', 'required');
+	  		$this->form_validation->set_rules('SN_Num_Terminal', 'Дата договора', 'required');
+	  		$this->form_validation->set_rules('Inv_Num_Terminal', 'Дисконт', 'required');
+	  		$this->form_validation->set_rules('Price_Terminal', 'Дата дисконта', 'required');
+	  		$this->form_validation->set_rules('Date_Terminal', 'Международные карты', 'required');
+
+		    if ($this->form_validation->run() == TRUE)
+		    {
+
+	  			$data = array (	'Page' 		=> 'formsuccess',
+	  							'backpage' 	=> 'terminal/edit/'.$id,
+		        			   	'Title'  	=> 'Терминал успешно изменен');
+	            $this->Add_edit->editterminal($id);
+
+	  			$this->load->view('main', $data);
+	        } else {
+                $this->form_validation->set_error_delimiters('<span class="label label-important">', '</span>');
+
+				$data['Page'] = 'terminaladd';
+				$data['UrlPage'] = 'terminal/edit/'.$id.'/1';
+		       	$data['Title'] = 'Изменение терминала';
+                $data['ID_Type_Terminal'] = form_dropdown('ID_Type_Terminal', $this->db_out_array('ID_Type_Terminal as ID, Name_Type_Terminal as Name', 'type_terminal'), set_value('ID_Type_Terminal'));
+	        	$this->load->view('main', $data);
+	        }
+            }
+
+        } Else {
+        	redirect('/', 'refresh');
+        }
+	}
+
 	function valid_fild($value)
 	{
 		if (!$this->db->field_exists($value, str_replace("ID_", "", $value)))
@@ -76,5 +164,20 @@ class Terminal extends CI_Controller {
 		{
 			return TRUE;
 		}
+	}
+
+	function db_out_array($Head, $Table)
+	{
+		$this->db->select($Head, FALSE);
+		$query = $this->db->get($Table);
+
+		if ($query->num_rows() > 0)
+	    {
+	   	    foreach ($query->result_array() as $row)
+			{
+			        $TempArray[$row['ID']] = $row['Name'];
+			}
+			return $TempArray;
+	    }
 	}
 }

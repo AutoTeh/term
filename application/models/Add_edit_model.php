@@ -12,53 +12,52 @@ class Add_edit_model extends CI_Model {
  	public function adddogovor()
  	{
 		$data = array(
-        'Num_Dogovor' 				=> $this->input->post('num_dogovor'),
-        'Date_Dogovor' 				=> $this->input->post('date_dogovor'),
-        'Diskont_Dogovor' 			=> $this->input->post('diskont'),
-        'Date_Diskont_Dogovor' 		=> $this->input->post('date_diskont'),
-        'Internat_Card_Dogovor' 	=> $this->input->post('inter_card'),
-        'Debet_Card_Dogovor' 		=> $this->input->post('debet_card'),
-        'Thank_Dogovor' 			=> $this->input->post('thank'),
-        'Money_Movement_Dogovor' 	=> $this->input->post('money_movement'),
-        'Money_Income_Dogovor' 		=> $this->input->post('money_income'),
-        'Date_Dissolution_Dogovor' 	=> $this->input->post('date_dissolution')
+        'Num_Dogovor' 				=> $this->input->post('Num_Dogovor'),
+        'Date_Dogovor' 				=> $this->input->post('Date_Dogovor'),
+        'Diskont_Dogovor' 			=> $this->input->post('Diskont_Dogovor'),
+        'Date_Diskont_Dogovor' 		=> $this->input->post('Date_Diskont_Dogovor'),
+        'Internat_Card_Dogovor' 	=> $this->input->post('Internat_Card_Dogovor'),
+        'Debet_Card_Dogovor' 		=> $this->input->post('Debet_Card_Dogovor'),
+        'Thank_Dogovor' 			=> $this->input->post('Thank_Dogovor'),
+        'Money_Movement_Dogovor' 	=> $this->input->post('Money_Movement_Dogovor'),
+        'Money_Income_Dogovor' 		=> $this->input->post('Money_Income_Dogovor'),
+        'Date_Dissolution_Dogovor' 	=> $this->input->post('Date_Dissolution_Dogovor')
 		);
 
 		$this->db->insert('dogovor', $data);
  	}
 
- 	public function addorg()
+ 	public function addorg($id_j = '', $id_p = '')
  	{
 		$data = array(
-        'Name_Org' 						=> $this->input->post('num_dogovor'),
-        'INN_Org' 						=> $this->input->post('date_dogovor'),
-        'ID_Post_Address_Org' 			=> $this->input->post('diskont'),
-        'Home_Post_Address_Org' 		=> $this->input->post('date_diskont'),
-        'ID_Juristical_Address_Org' 	=> $this->input->post('inter_card'),
-        'Home_Juristical_Address_Org'	=> $this->input->post('debet_card'),
-        'FIO_Boss_Org' 					=> $this->input->post('thank'),
-        'ID_Type_Org' 					=> $this->input->post('money_movement'),
-        'E_Mail_Org' 					=> $this->input->post('money_income'),
-        'Phone_Boss_Org' 				=> $this->input->post('money_income'),
-        'ID_Type_Rank_Org' 				=> $this->input->post('date_dissolution')
+        'Name_Org' 						=> $this->input->post('Name_Org'),
+        'INN_Org' 						=> $this->input->post('INN_Org'),
+        'ID_Post_Address_Org' 			=> $id_p,
+        'Home_Post_Address_Org' 		=> $this->input->post('Home_Post_Address_Org'),
+        'ID_Juristical_Address_Org' 	=> $id_j,
+        'Home_Juristical_Address_Org'	=> $this->input->post('Home_Juristical_Address_Org'),
+        'FIO_Boss_Org' 					=> $this->input->post('FIO_Boss_Org'),
+        'ID_Type_Org' 					=> $this->input->post('ID_Type_Org'),
+        'E_Mail_Org' 					=> $this->input->post('E_Mail_Org'),
+        'Phone_Boss_Org' 				=> $this->input->post('Phone_Boss_Org'),
+        'ID_Type_Rank_Org' 				=> $this->input->post('ID_Type_Rank_Org')
 		);
 
 		$this->db->insert('org', $data);
  	}
 
- 	public function addtct()
+ 	public function addtct($id_p = '')
  	{
 		$data = array(
-        'Name_TCT' 				=> $this->input->post('num_dogovor'),
-        'ID_Type_MCC_TCT' 		=> $this->input->post('date_dogovor'),
-        'Phone_TCT' 			=> $this->input->post('diskont'),
-        'Contact_Name_TCT' 		=> $this->input->post('date_diskont'),
-        'Num_Merchant_TCT' 		=> $this->input->post('inter_card'),
-        'ID_Address_TCT'		=> $this->input->post('debet_card'),
-        'ID_Type_Kategoria_TCT' => $this->input->post('thank'),
-        'Mode_Start_TCT' 		=> $this->input->post('money_movement'),
-        'Mode_lunch_TCT' 		=> $this->input->post('money_income'),
-        'Mode_End_TCT' 			=> $this->input->post('money_income')
+        'Name_TCT' 				=> $this->input->post('Name_TCT'),
+        'ID_Type_MCC_TCT' 		=> $this->input->post('ID_Type_MCC_TCT'),
+        'Phone_TCT' 			=> $this->input->post('Phone_TCT'),
+        'Contact_Name_TCT' 		=> $this->input->post('Contact_Name_TCT'),
+        'Num_Merchant_TCT' 		=> $this->input->post('Num_Merchant_TCT'),
+        'ID_Address_TCT'		=> $id_p,
+        'ID_Type_Kategoria_TCT' => $this->input->post('ID_Type_Kategoria_TCT'),
+        'Mode_TCT' 				=> $this->input->post('Mode_TCT'),
+        'Home_Address_TCT' 		=> $this->input->post('Home_Address_TCT')
 		);
 
 		$this->db->insert('tct', $data);
@@ -67,11 +66,11 @@ class Add_edit_model extends CI_Model {
  	public function addterminal()
  	{
 		$data = array(
-        'ID_Type_Terminal' 				=> $this->input->post('num_dogovor'),
-        'SN_Num_Terminal' 		=> $this->input->post('date_dogovor'),
-        'Inv_Num_Terminal' 			=> $this->input->post('diskont'),
-        'Price_Terminal' 		=> $this->input->post('date_diskont'),
-        'Date_Terminal' 		=> $this->input->post('inter_card')
+        'ID_Type_Terminal' 		=> $this->input->post('ID_Type_Terminal'),
+        'SN_Num_Terminal' 		=> $this->input->post('SN_Num_Terminal'),
+        'Inv_Num_Terminal' 		=> $this->input->post('Inv_Num_Terminal'),
+        'Price_Terminal' 		=> $this->input->post('Price_Terminal'),
+        'Date_Terminal' 		=> $this->input->post('Date_Terminal')
 		);
 
 		$this->db->insert('terminal', $data);
@@ -80,8 +79,8 @@ class Add_edit_model extends CI_Model {
  	public function addpinpad()
  	{
 		$data = array(
-		'ID_Type_PinPad' 		=> $this->input->post('date_dogovor'),
-        'SN_Num_PinPad' 			=> $this->input->post('diskont')
+		'ID_Type_PinPad' 		=> $this->input->post('ID_Type_PinPad'),
+        'SN_Num_PinPad' 		=> $this->input->post('SN_Num_PinPad')
         );
 
 		$this->db->insert('pinpad', $data);
@@ -90,8 +89,8 @@ class Add_edit_model extends CI_Model {
  	public function addsim()
  	{
 		$data = array(
-        'SN_Num_SIM' 				=> $this->input->post('num_dogovor'),
-        'ID_Type_Operator_SIM' 		=> $this->input->post('date_dogovor')
+        'SN_Num_SIM' 				=> $this->input->post('SN_Num_SIM'),
+        'ID_Type_Operator_SIM' 		=> $this->input->post('ID_Type_Operator_SIM')
         );
 
 		$this->db->insert('sim', $data);
@@ -100,72 +99,114 @@ class Add_edit_model extends CI_Model {
  	public function addtid()
  	{
 		$data = array(
-        'Num_TID' 		  => $this->input->post('num_dogovor'),
-        'Kod_TID' 		  => $this->input->post('date_dogovor'),
-        'Date_Reg_CA_TID' => $this->input->post('diskont')
+        'Num_TID' 		  => $this->input->post('Num_TID'),
+        'Kod_TID' 		  => $this->input->post('Kod_TID'),
+        'Date_Reg_CA_TID' => $this->input->post('Date_Reg_CA_TID')
         );
 
 		$this->db->insert('tid', $data);
  	}
 
- 	public function edit($id = '')
+ 	public function editdogovor($id = '')
  	{
 		$data = array(
-        'Login_Users' 	=> $this->input->post('login'),
-        'FIO_Users' 	=> $this->input->post('fio'),
-        'E_Mail_Users' 	=> $this->input->post('E_Mail'),
+        'Num_Dogovor' 				=> $this->input->post('Num_Dogovor'),
+        'Date_Dogovor' 				=> $this->input->post('Date_Dogovor'),
+        'Diskont_Dogovor' 			=> $this->input->post('Diskont_Dogovor'),
+        'Date_Diskont_Dogovor' 		=> $this->input->post('Date_Diskont_Dogovor'),
+        'Internat_Card_Dogovor' 	=> $this->input->post('Internat_Card_Dogovor'),
+        'Debet_Card_Dogovor' 		=> $this->input->post('Debet_Card_Dogovor'),
+        'Thank_Dogovor' 			=> $this->input->post('Thank_Dogovor'),
+        'Money_Movement_Dogovor' 	=> $this->input->post('Money_Movement_Dogovor'),
+        'Money_Income_Dogovor' 		=> $this->input->post('Money_Income_Dogovor'),
+        'Date_Dissolution_Dogovor' 	=> $this->input->post('Date_Dissolution_Dogovor')
 		);
 
-        if ($this->input->post('pass'))  $data['Pass_Users'] = do_hash($this->input->post('pass'));
-
-        $this->db->where('id', $id);
-		$this->db->update('users', $data);
+        $this->db->where('ID_Dogovor', $id);
+		$this->db->update('dogovor', $data);
  	}
 
- 	public function auth()
+ 	public function editorg($id = '', $id_j = '', $id_p = '')
  	{
-		$this->db->select('ID_Users, Login_Users, FIO_Users, ID_Group');
-		$this->db->from('users');
-		$this->db->where('Login_Users', $this->input->post('login'));
-		$this->db->where('Pass_Users', do_hash($this->input->post('pass')));
-		$query = $this->db->get();
+		$data = array(
+        'Name_Org' 						=> $this->input->post('Name_Org'),
+        'INN_Org' 						=> $this->input->post('INN_Org'),
+        'ID_Post_Address_Org' 			=> $id_p,
+        'Home_Post_Address_Org' 		=> $this->input->post('Home_Post_Address_Org'),
+        'ID_Juristical_Address_Org' 	=> $id_j,
+        'Home_Juristical_Address_Org'	=> $this->input->post('Home_Juristical_Address_Org'),
+        'FIO_Boss_Org' 					=> $this->input->post('FIO_Boss_Org'),
+        'ID_Type_Org' 					=> $this->input->post('ID_Type_Org'),
+        'E_Mail_Org' 					=> $this->input->post('E_Mail_Org'),
+        'Phone_Boss_Org' 				=> $this->input->post('Phone_Boss_Org'),
+        'ID_Type_Rank_Org' 				=> $this->input->post('ID_Type_Rank_Org')
+		);
 
-		if ($query->num_rows() > 0)
-		{
-			$row = $query->row();
-
-			$newdata = array(
-					'ID_Users'  => $row->ID_Users,
-			        'Login'  	=> $row->Login_Users,
-			        'FIO'     	=> $row->FIO_Users,
-			        'ID_Group'  => $row->ID_Group,
-			        'logged_in' => TRUE
-			);
-
-			$this->session->set_userdata($newdata);
-
-			return TRUE;
-		}   return FALSE;
+		$this->db->where('ID_Org', $id);
+		$this->db->update('org', $data);
  	}
 
- 	public function is_auth()
+ 	public function edittct($id = '', $id_p = '')
  	{
-		 if ($this->session->logged_in)
-		 {		 	return TRUE;
-		 }
-		 	Else
-		 {		 	redirect('/auth', 'refresh');		 	return FALSE;
-	     }
+		$data = array(
+        'Name_TCT' 				=> $this->input->post('Name_TCT'),
+        'ID_Type_MCC_TCT' 		=> $this->input->post('ID_Type_MCC_TCT'),
+        'Phone_TCT' 			=> $this->input->post('Phone_TCT'),
+        'Contact_Name_TCT' 		=> $this->input->post('Contact_Name_TCT'),
+        'Num_Merchant_TCT' 		=> $this->input->post('Num_Merchant_TCT'),
+        'ID_Address_TCT'		=> $id_p,
+        'ID_Type_Kategoria_TCT' => $this->input->post('ID_Type_Kategoria_TCT'),
+        'Mode_TCT' 				=> $this->input->post('Mode_TCT'),
+        'Home_Address_TCT' 		=> $this->input->post('Home_Address_TCT')
+		);
+
+		$this->db->where('ID_TCT', $id);
+		$this->db->update('tct', $data);
  	}
 
- 	public function is_auth_and_group($ID_Group)
+ 	public function edittid($id = '')
  	{
-		if ($ID_Group == $this->session->ID_Group)
-		{			return TRUE;
-		}
-		Else
-		{
-			redirect('/auth', 'refresh');			return FALSE;
-		}
+		$data = array(
+        'Num_TID' 		  => $this->input->post('Num_TID'),
+        'Kod_TID' 		  => $this->input->post('Kod_TID'),
+        'Date_Reg_CA_TID' => $this->input->post('Date_Reg_CA_TID')
+        );
+
+		$this->db->where('ID_TID', $id);
+		$this->db->update('tid', $data);
+ 	}
+
+ 	public function editterminal($id = '')
+ 	{
+		$data = array(
+        'ID_Type_Terminal' 		=> $this->input->post('ID_Type_Terminal'),
+        'SN_Num_Terminal' 		=> $this->input->post('SN_Num_Terminal'),
+        'Inv_Num_Terminal' 		=> $this->input->post('Inv_Num_Terminal'),
+        'Price_Terminal' 		=> $this->input->post('Price_Terminal'),
+        'Date_Terminal' 		=> $this->input->post('Date_Terminal')
+		);
+		$this->db->where('ID_Terminal', $id);
+		$this->db->update('terminal', $data);
+ 	}
+
+ 	public function editpinpad($id = '')
+ 	{
+		$data = array(
+		'ID_Type_PinPad' 		=> $this->input->post('ID_Type_PinPad'),
+        'SN_Num_PinPad' 		=> $this->input->post('SN_Num_PinPad')
+        );
+		$this->db->where('ID_PinOad', $id);
+		$this->db->update('pinpad', $data);
+
+ 	}
+
+ 	public function editsim($id = '')
+ 	{
+		$data = array(
+        'SN_Num_SIM' 				=> $this->input->post('SN_Num_SIM'),
+        'ID_Type_Operator_SIM' 		=> $this->input->post('ID_Type_Operator_SIM')
+        );
+		$this->db->where('ID_SIM', $id);
+		$this->db->update('sim', $data);
  	}
 }

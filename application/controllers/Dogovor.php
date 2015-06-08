@@ -19,8 +19,6 @@ class Dogovor extends CI_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 
-	public $rows_always_visible = '';
-
  	public function __construct()
     {
     	parent::__construct();
@@ -64,6 +62,100 @@ class Dogovor extends CI_Controller {
 
         } Else {
         	$this->load->view('err');
+        }
+	}
+
+	public function add()
+	{
+	  	$this->form_validation->set_rules('Num_Dogovor', 'Номер договора', 'required');
+	  	$this->form_validation->set_rules('Date_Dogovor', 'Дата договора', 'required');
+	  	$this->form_validation->set_rules('Diskont_Dogovor', 'Дисконт', 'required');
+	  	$this->form_validation->set_rules('Date_Diskont_Dogovor', 'Дата дисконта', 'required');
+	  	$this->form_validation->set_rules('Internat_Card_Dogovor', 'Международные карты', 'required');
+	  	$this->form_validation->set_rules('Debet_Card_Dogovor', 'Дебетовые карты', 'required');
+	  	$this->form_validation->set_rules('Thank_Dogovor', 'Спасибо', 'required');
+	  	$this->form_validation->set_rules('Money_Movement_Dogovor', 'Оборот', 'required');
+	  	$this->form_validation->set_rules('Money_Income_Dogovor', 'Доход', 'required');
+
+	    if ($this->form_validation->run() == TRUE)
+	    {
+
+  			$data = array (	'Page' 	=> 'formsuccess',
+  							'backpage' 	=> 'dogovor/add',
+	        			   	'Title'  => 'Договор успешно добавлен');
+            $this->Add_edit->adddogovor();
+
+  			$this->load->view('main', $data);
+
+        } Else {            $this->form_validation->set_error_delimiters('<span class="label label-important">', '</span>');        	$data = array (	'Page' 		=> 'dogovoradd',
+        					'UrlPage' 	=> 'dogovor/add',
+	        			   	'Title'  	=> 'Добавление нового договора.');
+
+        	$this->load->view('main', $data);
+        }
+	}
+
+	public function Edit($id = '', $FlagNext = FALSE)
+	{
+	    if ($this->form_validation->integer($id))
+	    {
+     		$this->db->select('Num_Dogovor, Date_Dogovor, Diskont_Dogovor,
+            				   Date_Diskont_Dogovor, Internat_Card_Dogovor,
+            				   Debet_Card_Dogovor, Thank_Dogovor,
+            				   Money_Movement_Dogovor, Money_Income_Dogovor,
+            				   Date_Dissolution_Dogovor');
+        	$this->db->from('dogovor');
+        	$this->db->where('ID_Dogovor', $id);
+        	$query = $this->db->get();
+
+        	if ($query->num_rows() > 0)
+        	{
+				$data = $query->row_array();
+
+			} else {
+				redirect('/', 'refresh');
+			}
+
+            if (!$FlagNext)
+            {				$data['Page'] = 'dogovoredit';
+				$data['UrlPage'] = 'dogovor/edit/'.$id.'/1';
+		       	$data['Title'] = 'Изменение договора';
+	        	$this->load->view('main', $data);
+            }
+            else
+            {
+	  		$this->form_validation->set_rules('Num_Dogovor', 'Номер договора', 'required');
+	  		$this->form_validation->set_rules('Date_Dogovor', 'Дата договора', 'required');
+	  		$this->form_validation->set_rules('Diskont_Dogovor', 'Дисконт', 'required');
+	  		$this->form_validation->set_rules('Date_Diskont_Dogovor', 'Дата дисконта', 'required');
+	  		$this->form_validation->set_rules('Internat_Card_Dogovor', 'Международные карты', 'required');
+	  		$this->form_validation->set_rules('Debet_Card_Dogovor', 'Дебетовые карты', 'required');
+	  		$this->form_validation->set_rules('Thank_Dogovor', 'Спасибо', 'required');
+	  		$this->form_validation->set_rules('Money_Movement_Dogovor', 'Оборот', 'required');
+	  		$this->form_validation->set_rules('Money_Income_Dogovor', 'Доход', 'required');
+
+		    if ($this->form_validation->run() == TRUE)
+		    {
+
+	  			$data = array (	'Page' 		=> 'formsuccess',
+	  							'backpage' 	=> 'dogovor/edit/'.$id,
+		        			   	'Title'  	=> 'Договор успешно изменен');
+	            $this->Add_edit->editdogovor($id);
+
+	  			$this->load->view('main', $data);
+	        } else {
+                $this->form_validation->set_error_delimiters('<span class="label label-important">', '</span>');
+
+				$data['Page'] = 'dogovoradd';
+				$data['UrlPage'] = 'dogovor/edit/'.$id.'/1';
+		       	$data['Title'] = 'Изменение договора';
+
+	        	$this->load->view('main', $data);
+	        }
+            }
+
+        } Else {
+        	redirect('/', 'refresh');
         }
 	}
 
